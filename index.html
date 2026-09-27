@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Series & Epicycles Interactive Laboratory</title>
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #0b0918;
+            --card-bg: #181530;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-coral: #ff7e5f;
+            --accent-peach: #feb47b;
+            --accent-purple: #8b7cf8;
+            --accent-cyan: #38ef7d;
+            --accent-blue: #4facfe;
+            --text-main: #e6e8f5;
+            --text-dim: #9aa0c2;
+            --slider-track: #2a254d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 16:9 App Grid Layout */
+        .app-layout {
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            display: grid;
+            grid-template-columns: 410px 1fr;
+            gap: 9px;
+            padding: 9px 12px;
+            background: radial-gradient(circle at 80% 20%, #161230 0%, #0b0918 100%);
+            box-sizing: border-box;
+        }
+
+        /* Columns */
+        .left-col,
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: calc(100vh - 18px);
+            overflow: hidden;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 11px;
+            padding: 8px 12px;
+            position: relative;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #fff;
+        }
+
+        .card-tag {
+            font-size: 0.70rem;
+            color: var(--text-dim);
+            font-family: monospace;
+        }
+
+        /* Waveform Selection Grid */
+        .waveform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .wave-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 7px;
+            padding: 6px 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wave-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 126, 95, 0.4);
+        }
+
+        .wave-btn.active {
+            background: rgba(139, 124, 248, 0.16);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(139, 124, 248, 0.25);
+        }
+
+        .wave-info .name {
+            font-size: 0.80rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .wave-info .formula {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            font-family: 'Courier New', monospace;
+            margin-top: 1px;
+        }
+
+        .wave-icon {
+            width: 38px;
+            height: 20px;
+        }
+
+        /* Duty Cycle Slider Box */
+        .duty-cycle-box {
+            margin-top: 5px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .duty-cycle-box.visible {
+            display: flex;
+        }
+
+        .duty-cycle-box label {
+            font-size: 0.72rem;
+            color: var(--accent-peach);
+            white-space: nowrap;
+        }
+
+        /* Dynamic Function Display & Equation Input */
+        .custom-eq-card {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 38px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            color: #fff;
+            padding: 5px 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.80rem;
+            resize: none;
+            outline: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .custom-input:focus {
+            border-color: var(--accent-purple);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 8px rgba(139, 124, 248, 0.3);
+            cursor: text;
+        }
+
+        .custom-hint {
+            font-size: 0.63rem;
+            color: var(--text-dim);
+            line-height: 1.2;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #44376b, #322854);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #5b4b8f, #41356e);
+            border-color: rgba(255, 126, 95, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #4e3975, #674383);
+            border-color: rgba(255, 126, 95, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(135deg, #644a94, #8254a6);
+        }
+
+        /* Coefficient Laboratory */
+        .coeff-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .coeff-tabs {
+            display: flex;
+            gap: 3px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px;
+            border-radius: 6px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 3px 4px;
+            font-size: 0.68rem;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .math-hero-box {
+            background: rgba(0, 0, 0, 0.32);
+            border-radius: 7px;
+            padding: 6px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .main-formula {
+            font-size: 0.84rem;
+            color: #feb47b;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .sub-formula {
+            font-size: 0.74rem;
+            color: #38ef7d;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .coeff-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px;
+        }
+
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            width: 28px;
+            height: 15px;
+            background: #2b254d;
+            border-radius: 10px;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+
+        .toggle-checkbox {
+            display: none;
+        }
+
+        .toggle-checkbox:checked+.toggle-switch {
+            background: var(--accent-coral);
+        }
+
+        .toggle-checkbox:checked+.toggle-switch::after {
+            transform: translateX(13px);
+        }
+
+        .coeff-list-box {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 7px;
+            padding: 4px 6px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-height: 80px;
+        }
+
+        .coeff-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.025);
+            border-left: 2px solid var(--accent-purple);
+        }
+
+        .coeff-item .math-val {
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.74rem;
+        }
+
+        .coeff-item .approx-val {
+            color: var(--accent-peach);
+            font-size: 0.72rem;
+            font-family: monospace;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .coeff-item .approx-val .katex {
+            font-size: 0.74rem;
+            color: var(--accent-peach);
+        }
+
+        /* RIGHT COLUMN: Canvas, Controls, and 3 Panels */
+        .canvas-card {
+            flex: 1;
+            min-height: 210px;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            background: #110e24;
+            display: flex;
+            border-radius: 11px;
+        }
+
+        #fourierCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Controls Row: Terms (long), Speed (half), Scale (half) */
+        .controls-row {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr 1fr;
+            gap: 12px;
+            background: #181530;
+            padding: 6px 14px;
+            border-radius: 9px;
+            border: 1px solid var(--card-border);
+            align-items: center;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .slider-label .val-num {
+            color: var(--accent-coral);
+            font-weight: 700;
+            font-size: 0.86rem;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: var(--slider-track);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-coral);
+            box-shadow: 0 0 7px rgba(255, 126, 95, 0.7);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Epicycle Options Bar */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #181530;
+            padding: 5px 12px;
+            border-radius: 9px;
+            border: 1px solid var(--card-border);
+        }
+
+        .opt-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.74rem;
+            color: var(--text-main);
+        }
+
+        .opt-desc {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+
+        /* THREE PANELS ROW */
+        .bottom-panels-grid {
+            height: 172px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.25fr;
+            grid-template-rows: 1fr auto;
+            gap: 8px;
+        }
+
+        .sub-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 11px;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            flex: 1;
+            min-height: 95px;
+            display: block;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.28);
+        }
+
+        .spectrum-slider-bar {
+            grid-column: 1 / span 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 5px;
+        }
+
+        .spectrum-slider-bar label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* Gibbs Panel Specifics */
+        .gibbs-panel {
+            grid-row: 1 / span 2;
+            grid-column: 3;
+            background: linear-gradient(145deg, #1c1736, #15122b);
+            border: 1px solid rgba(255, 126, 95, 0.2);
+        }
+
+        .gibbs-badge {
+            background: rgba(255, 126, 95, 0.15);
+            border: 1px solid rgba(255, 126, 95, 0.4);
+            color: var(--accent-peach);
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .gibbs-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            gap: 2px;
+        }
+
+        .gibbs-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 3px 6px;
+            border-radius: 5px;
+        }
+
+        .gibbs-formula {
+            font-size: 0.66rem;
+            color: #feb47b;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 3px 5px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        #gibbsCanvas {
+            height: 48px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        /* Modal Popup for Draw Equation */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 4, 15, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 520px;
+            background: #1a1636;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 0.98rem;
+            color: #fff;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        #drawCanvas {
+            width: 100%;
+            height: 180px;
+            background: #0f0c22;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+        <!-- LEFT COLUMN: Presets, Dynamic Function Display/Input/Draw, & Math Laboratory -->
+        <div class="left-col">
+            <!-- 1. Waveform Selection Grid -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Waveform</span>
+                    <span class="card-tag" id="currentWaveTag">Square</span>
+                </div>
+                <div class="waveform-grid">
+                    <button class="wave-btn" data-wave="sine">
+                        <div class="wave-info">
+                            <div class="name">Sine</div>
+                            <div class="formula">sin(2πx)</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-sine"></canvas>
+                    </button>
+                    <button class="wave-btn" data-wave="triangle">
+                        <div class="wave-info">
+                            <div class="name">Triangle</div>
+                            <div class="formula">1 - 4|x-0.5|</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-triangle"></canvas>
+                    </button>
+                    <button class="wave-btn active" data-wave="square">
+                        <div class="wave-info">
+                            <div class="name">Square</div>
+                            <div class="formula">sgn(sin(2πx))</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-square"></canvas>
+                    </button>
+                    <button class="wave-btn" data-wave="sawtooth">
+                        <div class="wave-info">
+                            <div class="name">Sawtooth</div>
+                            <div class="formula">2(x-[x])-1</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-sawtooth"></canvas>
+                    </button>
+                    <button class="wave-btn" data-wave="pulse">
+                        <div class="wave-info">
+                            <div class="name">Pulse train</div>
+                            <div class="formula" id="pulseDutyLabel">duty = 25%</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-pulse"></canvas>
+                    </button>
+                    <button class="wave-btn" data-wave="custom">
+                        <div class="wave-info">
+                            <div class="name">Custom equation</div>
+                            <div class="formula">f(x) = ..</div>
+                        </div>
+                        <canvas class="wave-icon" id="icon-custom"></canvas>
+                    </button>
+                </div>
+
+                <!-- Duty Cycle Slider (Visible ONLY when Pulse Train is selected) -->
+                <div class="duty-cycle-box" id="dutyCycleBox">
+                    <label>Duty Cycle: <strong id="dutyVal" style="color:#fff;">25%</strong></label>
+                    <input type="range" id="dutySlider" min="5" max="95" value="25" step="1" style="flex:1;">
+                </div>
+            </div>
+
+            <!-- 2. Dynamic Function Display & Equation Input -->
+            <div class="card custom-eq-card">
+                <div class="card-header">
+                    <span class="card-title" id="functionCardTitle">Square Wave</span>
+                    <span class="card-tag">periodic by definition</span>
+                </div>
+                <textarea class="custom-input" id="customExpr" spellcheck="false">x < 0.5 ? 1 : -1</textarea>
+                <div class="custom-hint">
+                    Use <strong>x</strong> in [0, 1]. Supported: sin, cos, tan, asin, acos, atan, exp, sqrt, abs, log,
+                    ln, floor, ceil, sign, min, max, pi, e. Powers use ^.
+                </div>
+                <div class="btn-group">
+                    <button class="action-btn" id="openDrawModalBtn">
+                        <span>Draw an equation</span>
+                    </button>
+                    <button class="action-btn primary" id="applyEquationBtn">
+                        <span>Apply equation</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. Coefficient Laboratory -->
+            <div class="card coeff-card">
+                <div class="card-header">
+                    <span class="card-title">Coefficient laboratory</span>
+                    <span class="card-tag" id="coeffModeTag">Fourier series</span>
+                </div>
+
+                <div class="coeff-tabs">
+                    <button class="tab-btn active" data-tab="fourier">Fourier series</button>
+                    <button class="tab-btn" data-tab="exponential">Exponential</button>
+                    <button class="tab-btn" data-tab="half-sine">Half-range sine</button>
+                    <button class="tab-btn" data-tab="half-cosine">Half-range cosine</button>
+                </div>
+
+                <div class="math-hero-box" id="formulaHero">
+                    <div class="main-formula" id="mainFormulaMath">
+                        f(x) ≈ Σ [aₙ cos(2πnx) + bₙ sin(2πnx)]
+                    </div>
+                    <div class="sub-formula" id="subFormulaMath">
+                        Integrated Evaluated Formulas
+                    </div>
+                </div>
+
+                <div class="coeff-header-row">
+                    <span id="coeffHeaderLabel"
+                        style="font-size: 0.72rem; font-weight: 600; color: var(--text-dim);">Coefficients (a₀, aₙ, bₙ,
+                        cₙ)</span>
+                    <label class="toggle-wrap">
+                        <span>Show Decimal</span>
+                        <input type="checkbox" id="decimalToggle" class="toggle-checkbox">
+                        <div class="toggle-switch"></div>
+                    </label>
+                </div>
+
+                <div class="coeff-list-box" id="coeffListBox">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Epicycles Canvas, Controls, & Bottom 3 Panels -->
+        <div class="right-col">
+            <!-- 1. Epicycle Animation Canvas -->
+            <div class="canvas-card">
+                <canvas id="fourierCanvas"></canvas>
+            </div>
+
+            <!-- 2. Main Controls Bar (Terms, Speed, Scale) -->
+            <div class="controls-row">
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Number of Terms:</span>
+                        <span class="val-num" id="termsValue">5</span>
+                    </div>
+                    <input type="range" id="terms" min="1" max="100" value="5">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Animation Speed:</span>
+                        <span class="val-num" id="speedValue">1.0 x</span>
+                    </div>
+                    <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1.0">
+                </div>
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Scale:</span>
+                        <span class="val-num" id="scaleValue">1.0 x</span>
+                    </div>
+                    <input type="range" id="scale" min="0.3" max="2.0" step="0.05" value="1.0">
+                </div>
+            </div>
+
+            <!-- 3. Epicycle Controls / Switches -->
+            <div class="options-row">
+                <div class="opt-item">
+                    <label class="toggle-wrap">
+                        <input type="checkbox" id="animateToggle" class="toggle-checkbox" checked>
+                        <div class="toggle-switch"></div>
+                        <strong style="color:#fff;">Animate</strong>
+                    </label>
+                </div>
+                <div class="opt-item">
+                    <label class="toggle-wrap">
+                        <input type="checkbox" id="concentricToggle" class="toggle-checkbox">
+                        <div class="toggle-switch"></div>
+                        <strong style="color:#fff;">Concentric circles</strong>
+                    </label>
+                    <span class="opt-desc">Tip-to-tail is a vector chain. Concentric mode collapses circles to
+                        center.</span>
+                </div>
+            </div>
+
+            <!-- 4. BOTTOM 3 PANELS: Amplitude, Phase, Gibbs Phenomenon -->
+            <div class="bottom-panels-grid">
+                <!-- Panel 1: Amplitude Spectrum (Autoscaled with Gridlines) -->
+                <div class="sub-panel">
+                    <div class="panel-title">
+                        <span>Amplitude Spectrum</span>
+                        <span style="color:var(--accent-blue); font-size:0.65rem;">|cₙ| = √(aₙ²+bₙ²)</span>
+                    </div>
+                    <canvas id="ampCanvas" class="chart-canvas"></canvas>
+                </div>
+
+                <!-- Panel 2: Phase Spectrum (Gridlines & Markings) -->
+                <div class="sub-panel">
+                    <div class="panel-title">
+                        <span>Phase Spectrum</span>
+                        <span style="color:var(--accent-cyan); font-size:0.65rem;">φₙ = atan2(-bₙ, aₙ)</span>
+                    </div>
+                    <canvas id="phaseCanvas" class="chart-canvas"></canvas>
+                </div>
+
+                <!-- Panel 3: Gibbs Phenomenon -->
+                <div class="sub-panel gibbs-panel">
+                    <div class="panel-title">
+                        <span>Gibbs Phenomenon</span>
+                        <span class="gibbs-badge" id="gibbsBadge">+8.95%</span>
+                    </div>
+                    <div class="gibbs-content">
+                        <div class="gibbs-stat-row">
+                            <span style="color:var(--text-dim);">Overshoot Peak:</span>
+                            <span id="overshootPct" style="color:var(--accent-peach); font-weight:700;">8.95%
+                                (Wilbraham–Gibbs)</span>
+                        </div>
+                        <div class="gibbs-formula" id="gibbsFormulaBox">
+                            Δ = (1/π) ∫₀^π (sin t / t) dt - 1/2 ≈ 8.949%
+                        </div>
+                        <canvas id="gibbsCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Shared Spectrum Slider -->
+                <div class="spectrum-slider-bar">
+                    <label>Spectrum Harmonics: <strong id="specTermsVal"
+                            style="color:var(--accent-peach)">16</strong></label>
+                    <input type="range" id="spectrumTermsSlider" min="4" max="32" value="16" step="1" style="flex:1;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Draw an Equation Popup -->
+    <div class="modal-overlay" id="drawModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Draw a Waveform</h3>
+                <button class="modal-close-btn" id="closeDrawModalBtn">&times;</button>
+            </div>
+            <p style="font-size: 0.74rem; color: var(--text-dim);">Click and drag across the canvas from left (x=0) to
+                right (x=1) at any speed. Fast strokes are fully interpolated with zero gaps.</p>
+            <canvas id="drawCanvas"></canvas>
+            <div class="modal-footer">
+                <div class="modal-btn-row">
+                    <button class="action-btn" id="clearDrawBtn">Clear</button>
+                    <button class="action-btn" id="smoothDrawBtn">Smooth Wave</button>
+                </div>
+                <button class="action-btn primary" id="useDrawnBtn">Use Drawn Waveform</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const canvas = document.getElementById('fourierCanvas');
+        const ctx = canvas.getContext('2d');
+        const ampCanvas = document.getElementById('ampCanvas');
+        const ampCtx = ampCanvas.getContext('2d');
+        const phaseCanvas = document.getElementById('phaseCanvas');
+        const phaseCtx = phaseCanvas.getContext('2d');
+        const gibbsCanvas = document.getElementById('gibbsCanvas');
+        const gibbsCtx = gibbsCanvas.getContext('2d');
+        const drawCanvas = document.getElementById('drawCanvas');
+        const drawCtx = drawCanvas.getContext('2d');
+
+        // Sliders & Controls
+        const termsSlider = document.getElementById('terms');
+        const speedSlider = document.getElementById('speed');
+        const scaleSlider = document.getElementById('scale');
+        const termsValue = document.getElementById('termsValue');
+        const speedValue = document.getElementById('speedValue');
+        const scaleValue = document.getElementById('scaleValue');
+        const animateToggle = document.getElementById('animateToggle');
+        const concentricToggle = document.getElementById('concentricToggle');
+        const decimalToggle = document.getElementById('decimalToggle');
+        const spectrumTermsSlider = document.getElementById('spectrumTermsSlider');
+        const specTermsVal = document.getElementById('specTermsVal');
+        const functionCardTitle = document.getElementById('functionCardTitle');
+        const customExprInput = document.getElementById('customExpr');
+
+        // State variables
+        let numTerms = parseInt(termsSlider.value);
+        let speed = parseFloat(speedSlider.value);
+        let scale = parseFloat(scaleSlider.value);
+        let isAnimating = true;
+        let isConcentric = false;
+        let morphConcentric = 0;
+        let showDecimal = false;
+        let spectrumTerms = 16;
+        let currentWaveform = 'square';
+        let dutyCycle = 0.25;
+        let activeTab = 'fourier';
+        let customExpr = 'x < 0.5 ? 1 : -1';
+
+        // High resolution continuous buffer for drawing (1024 points)
+        const DRAW_RES = 1024;
+        let drawnPoints = new Float64Array(DRAW_RES);
+        let hasDrawn = false;
+
+        let time = 0;
+        const wave = [];
+        const maxWavePoints = 1000;
+
+        // Fourier Harmonics Model
+        let harmonics = [];
+        let halfSineHarmonics = [];
+        let halfCosineHarmonics = [];
+        let dcOffset = 0;
+
+        // Preset equations
+        const presetEquations = {
+            'square': 'x < 0.5 ? 1 : -1',
+            'sine': 'sin(2*pi*x)',
+            'triangle': '1 - 4*abs(x - 0.5)',
+            'sawtooth': '2*x - 1',
+            'pulse': 'x < 0.25 ? 1 : -1',
+            'custom': 'sin(2*pi*x) + 0.4*sin(6*pi*x)'
+        };
+
+        const presetTitles = {
+            'square': 'Square Wave',
+            'sine': 'Sine Wave',
+            'triangle': 'Triangle Wave',
+            'sawtooth': 'Sawtooth Wave',
+            'pulse': 'Pulse Train: duty = 25%',
+            'custom': 'Custom Equation: f(x)',
+            'drawn': 'Drawn Waveform: f(x)'
+        };
+
+        // Resize handler with devicePixelRatio support
+        function resizeCanvases() {
+            const fit = (c, context) => {
+                const rect = c.parentElement.getBoundingClientRect();
+                c.width = rect.width;
+                c.height = rect.height;
+            };
+            fit(canvas, ctx);
+            fit(ampCanvas, ampCtx);
+            fit(phaseCanvas, phaseCtx);
+            fit(gibbsCanvas, gibbsCtx);
+
+            const drawRect = drawCanvas.getBoundingClientRect();
+            drawCanvas.width = drawRect.width;
+            drawCanvas.height = drawRect.height;
+            if (hasDrawn) renderDrawnCanvas();
+        }
+
+        window.addEventListener('resize', resizeCanvases);
+
+        // Calculate Fourier Decomposition
+        function computeFourierSeries() {
+            harmonics = [];
+            halfSineHarmonics = [];
+            halfCosineHarmonics = [];
+            dcOffset = 0;
+
+            if (currentWaveform === 'square') {
+                for (let i = 0; i < 100; i++) {
+                    const n = i * 2 + 1;
+                    const bn = 4 / (n * Math.PI);
+                    harmonics.push({
+                        n: n,
+                        an: 0,
+                        bn: bn,
+                        cn: bn,
+                        theta: 0,
+                        anMath: `a_{${n}} = 0`,
+                        bnMath: `b_{${n}} = \\frac{4}{${n}\\pi}`,
+                        baseRadius: 70 * bn
+                    });
+                }
+            } else if (currentWaveform === 'sawtooth') {
+                for (let n = 1; n <= 100; n++) {
+                    const bn = (n % 2 === 0 ? -1 : 1) * (2 / (n * Math.PI));
+                    harmonics.push({
+                        n: n,
+                        an: 0,
+                        bn: bn,
+                        cn: Math.abs(bn),
+                        theta: bn >= 0 ? 0 : Math.PI,
+                        anMath: `a_{${n}} = 0`,
+                        bnMath: `b_{${n}} = \\frac{2(-1)^{${n}+1}}{${n}\\pi}`,
+                        baseRadius: 70 * Math.abs(bn)
+                    });
+                }
+            } else if (currentWaveform === 'triangle') {
+                // Canonical Triangle Wave: f(x) = 1 - 4|x - 0.5| (Fourier Cosine Series)
+                // a_n = -8 / (pi * n)^2 for odd n; b_n = 0
+                for (let i = 0; i < 100; i++) {
+                    const n = i * 2 + 1;
+                    const an = -8 / (Math.PI * Math.PI * n * n);
+                    harmonics.push({
+                        n: n,
+                        an: an,
+                        bn: 0,
+                        cn: Math.abs(an),
+                        theta: -Math.PI / 2,
+                        anMath: `a_{${n}} = -\\frac{8}{(${n}\\pi)^2}`,
+                        bnMath: `b_{${n}} = 0`,
+                        baseRadius: 70 * (Math.abs(an) * (Math.PI * Math.PI / 8))
+                    });
+                }
+            } else if (currentWaveform === 'sine') {
+                harmonics.push({
+                    n: 1,
+                    an: 0,
+                    bn: 1,
+                    cn: 1,
+                    theta: 0,
+                    anMath: `a_1 = 0`,
+                    bnMath: `b_1 = 1`,
+                    baseRadius: 70
+                });
+                for (let n = 2; n <= 100; n++) {
+                    harmonics.push({ n, an: 0, bn: 0, cn: 0, theta: 0, anMath: `a_{${n}} = 0`, bnMath: `b_{${n}} = 0`, baseRadius: 0 });
+                }
+            } else if (currentWaveform === 'pulse') {
+                dcOffset = 2 * dutyCycle - 1;
+                for (let n = 1; n <= 100; n++) {
+                    const an = (4 / (n * Math.PI)) * Math.sin(n * Math.PI * dutyCycle);
+                    harmonics.push({
+                        n: n,
+                        an: an,
+                        bn: 0,
+                        cn: Math.abs(an),
+                        theta: an >= 0 ? Math.PI / 2 : -Math.PI / 2,
+                        anMath: `a_{${n}} = \\frac{4}{${n}\\pi}\\sin(${n}\\pi \\cdot ${dutyCycle})`,
+                        bnMath: `b_{${n}} = 0`,
+                        baseRadius: 70 * Math.abs(an)
+                    });
+                }
+            } else {
+                // Numerical integration for Custom or Drawn
+                const SAMPLES = 1024;
+                const dx = 1 / SAMPLES;
+                let sumDC = 0;
+                const MAX_H = 100;
+                const rawAn = new Array(MAX_H + 1).fill(0);
+                const rawBn = new Array(MAX_H + 1).fill(0);
+
+                for (let i = 0; i < SAMPLES; i++) {
+                    const x = i * dx;
+                    let y = 0;
+                    if (currentWaveform === 'custom') {
+                        y = evalCustomEquation(x);
+                    } else if (currentWaveform === 'drawn' && hasDrawn) {
+                        const idx = Math.floor(x * (DRAW_RES - 1));
+                        y = drawnPoints[idx] || 0;
+                    }
+                    sumDC += y * dx;
+                    for (let n = 1; n <= MAX_H; n++) {
+                        const angle = 2 * Math.PI * n * x;
+                        rawAn[n] += 2 * y * Math.cos(angle) * dx;
+                        rawBn[n] += 2 * y * Math.sin(angle) * dx;
+                    }
+                }
+                dcOffset = sumDC;
+
+                for (let n = 1; n <= MAX_H; n++) {
+                    const an = Math.abs(rawAn[n]) < 1e-4 ? 0 : rawAn[n];
+                    const bn = Math.abs(rawBn[n]) < 1e-4 ? 0 : rawBn[n];
+                    const cn = Math.sqrt(an * an + bn * bn);
+                    const theta = Math.atan2(an, bn);
+                    harmonics.push({
+                        n: n,
+                        an: an,
+                        bn: bn,
+                        cn: cn,
+                        theta: theta,
+                        anMath: `a_{${n}} = ${an.toFixed(3)}`,
+                        bnMath: `b_{${n}} = ${bn.toFixed(3)}`,
+                        baseRadius: 70 * cn
+                    });
+                }
+            }
+
+            // Compute Half-range Sine and Cosine series
+            const SAMPLES = 1024;
+            const dx = 1 / SAMPLES;
+            for (let n = 1; n <= 100; n++) {
+                let sSum = 0;
+                let cSum = 0;
+                for (let i = 0; i < SAMPLES; i++) {
+                    const x = i * dx;
+                    let y = 0;
+                    if (currentWaveform === 'square') y = x < 0.5 ? 1 : -1;
+                    else if (currentWaveform === 'triangle') y = 1 - 4 * Math.abs(x - 0.5);
+                    else if (currentWaveform === 'sawtooth') y = 2 * x - 1;
+                    else if (currentWaveform === 'sine') y = Math.sin(2 * Math.PI * x);
+                    else if (currentWaveform === 'pulse') y = x < dutyCycle ? 1 : -1;
+                    else if (currentWaveform === 'custom') y = evalCustomEquation(x);
+                    else if (currentWaveform === 'drawn' && hasDrawn) y = drawnPoints[Math.floor(x * (DRAW_RES - 1))] || 0;
+
+                    sSum += 2 * y * Math.sin(Math.PI * n * x) * dx;
+                    cSum += 2 * y * Math.cos(Math.PI * n * x) * dx;
+                }
+                const bSine = Math.abs(sSum) < 1e-4 ? 0 : sSum;
+                const aCosine = Math.abs(cSum) < 1e-4 ? 0 : cSum;
+                halfSineHarmonics.push({ n: n, bn: bSine });
+                halfCosineHarmonics.push({ n: n, an: aCosine });
+            }
+        }
+
+        function evalCustomEquation(x) {
+            try {
+                let expr = customExpr.toLowerCase()
+                    .replace(/\^/g, '**')
+                    .replace(/\bpi\b/g, 'Math.PI')
+                    .replace(/\be\b/g, 'Math.E')
+                    .replace(/\bsin\b/g, 'Math.sin')
+                    .replace(/\bcos\b/g, 'Math.cos')
+                    .replace(/\btan\b/g, 'Math.tan')
+                    .replace(/\basin\b/g, 'Math.asin')
+                    .replace(/\bacos\b/g, 'Math.acos')
+                    .replace(/\batan\b/g, 'Math.atan')
+                    .replace(/\bexp\b/g, 'Math.exp')
+                    .replace(/\bsqrt\b/g, 'Math.sqrt')
+                    .replace(/\babs\b/g, 'Math.abs')
+                    .replace(/\blog\b/g, 'Math.log10')
+                    .replace(/\bln\b/g, 'Math.log')
+                    .replace(/\bfloor\b/g, 'Math.floor')
+                    .replace(/\bceil\b/g, 'Math.ceil')
+                    .replace(/\bsign\b/g, 'Math.sign')
+                    .replace(/\bmin\b/g, 'Math.min')
+                    .replace(/\bmax\b/g, 'Math.max');
+                const fn = new Function('x', `return (${expr});`);
+                const val = fn(x);
+                return isFinite(val) ? val : 0;
+            } catch (e) { return 0; }
+        }
+
+        // Epicycles & Wave Rendering
+        function calculateFourierSeries() {
+            let x = 0;
+            let y = 0;
+
+            const activeHarmonics = harmonics.slice(0, numTerms);
+            const count = activeHarmonics.length;
+
+            for (let i = 0; i < count; i++) {
+                const h = activeHarmonics[i];
+                const radius = h.baseRadius * scale;
+                if (radius < 0.05) continue;
+
+                const prevX = x;
+                const prevY = y;
+
+                const circleX = prevX * (1 - morphConcentric);
+                const circleY = prevY * (1 - morphConcentric);
+
+                const angle = h.n * time + (h.theta || 0);
+                const dx = radius * Math.cos(angle);
+                const dy = radius * Math.sin(angle);
+
+                x += dx;
+                y += dy;
+
+                // Draw Circle
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, Math.abs(radius), 0, Math.PI * 2);
+                ctx.strokeStyle = `hsla(${200 + i * 10}, 80%, 60%, ${0.4 + 0.6 * (1 - i / count)})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw Vector Line
+                ctx.beginPath();
+                ctx.moveTo(circleX, circleY);
+                ctx.lineTo(circleX + dx, circleY + dy);
+                ctx.strokeStyle = `hsla(${200 + i * 10}, 100%, 70%, 0.75)`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw Joint Dot
+                ctx.beginPath();
+                ctx.arc(circleX + dx, circleY + dy, 3, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${200 + i * 10}, 100%, 70%)`;
+                ctx.fill();
+            }
+
+            const finalY = y - dcOffset * 70 * scale;
+
+            wave.unshift(finalY);
+            if (wave.length > maxWavePoints) {
+                wave.pop();
+            }
+
+            const waveStartX = Math.max(260, canvas.width * 0.42);
+            ctx.beginPath();
+            ctx.moveTo(waveStartX, wave[0]);
+
+            for (let i = 1; i < wave.length; i++) {
+                const px = waveStartX + i;
+                if (px > canvas.width - 10) break;
+                ctx.lineTo(px, wave[i]);
+            }
+
+            ctx.strokeStyle = '#ff7e5f';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Connecting line with smooth fade-out during concentric mode
+            const lineAlpha = (1 - morphConcentric) * 0.5;
+            if (lineAlpha > 0.01) {
+                ctx.beginPath();
+                ctx.moveTo(x, finalY);
+                ctx.lineTo(waveStartX, wave[0]);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // Connecting dot
+            ctx.beginPath();
+            ctx.arc(waveStartX, wave[0], 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#feb47b';
+            ctx.fill();
+
+            if (isAnimating) {
+                time += 0.05 * speed;
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const targetMorph = isConcentric ? 1 : 0;
+            morphConcentric += (targetMorph - morphConcentric) * 0.08;
+
+            ctx.save();
+            const originX = Math.max(120, canvas.width * 0.20);
+            ctx.translate(originX, canvas.height / 2);
+
+            calculateFourierSeries();
+
+            ctx.restore();
+            requestAnimationFrame(animate);
+        }
+
+        // Tap/click to select all text in equation input
+        customExprInput.addEventListener('focus', function () {
+            this.select();
+        });
+        customExprInput.addEventListener('click', function () {
+            this.select();
+        });
+
+        // UI Event Listeners
+        termsSlider.addEventListener('input', () => {
+            numTerms = parseInt(termsSlider.value);
+            termsValue.textContent = numTerms;
+            wave.length = 0;
+            updateCoefficientsList();
+            updateBottomPanels();
+        });
+
+        speedSlider.addEventListener('input', () => {
+            speed = parseFloat(speedSlider.value);
+            speedValue.textContent = speed.toFixed(1) + ' x';
+        });
+
+        scaleSlider.addEventListener('input', () => {
+            scale = parseFloat(scaleSlider.value);
+            scaleValue.textContent = scale.toFixed(2) + ' x';
+            wave.length = 0;
+        });
+
+        animateToggle.addEventListener('change', (e) => {
+            isAnimating = e.target.checked;
+        });
+
+        concentricToggle.addEventListener('change', (e) => {
+            isConcentric = e.target.checked;
+        });
+
+        decimalToggle.addEventListener('change', (e) => {
+            showDecimal = e.target.checked;
+            updateCoefficientsList();
+        });
+
+        spectrumTermsSlider.addEventListener('input', () => {
+            spectrumTerms = parseInt(spectrumTermsSlider.value);
+            specTermsVal.textContent = spectrumTerms;
+            drawAmplitudeSpectrum();
+            drawPhaseSpectrum();
+        });
+
+        // Waveform Buttons
+        const waveBtns = document.querySelectorAll('.wave-btn');
+        const dutyBox = document.getElementById('dutyCycleBox');
+        const waveTag = document.getElementById('currentWaveTag');
+
+        waveBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                waveBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                currentWaveform = btn.dataset.wave;
+                waveTag.textContent = btn.querySelector('.name').textContent;
+                functionCardTitle.textContent = presetTitles[currentWaveform] || 'Function: f(x)';
+                customExprInput.value = presetEquations[currentWaveform] || customExpr;
+                customExpr = customExprInput.value;
+
+                if (currentWaveform === 'pulse') {
+                    dutyBox.classList.add('visible');
+                } else {
+                    dutyBox.classList.remove('visible');
+                }
+
+                wave.length = 0;
+                computeFourierSeries();
+                updateCoefficientsList();
+                updateTabFormulas();
+                updateBottomPanels();
+            });
+        });
+
+        // Duty slider
+        const dutySlider = document.getElementById('dutySlider');
+        const dutyVal = document.getElementById('dutyVal');
+        const pulseDutyLabel = document.getElementById('pulseDutyLabel');
+
+        dutySlider.addEventListener('input', () => {
+            const pct = parseInt(dutySlider.value);
+            dutyCycle = pct / 100;
+            dutyVal.textContent = `${pct}%`;
+            pulseDutyLabel.textContent = `duty = ${pct}%`;
+            presetTitles['pulse'] = `Pulse Train: duty = ${pct}%`;
+            functionCardTitle.textContent = presetTitles['pulse'];
+            presetEquations['pulse'] = `x < ${dutyCycle} ? 1 : -1`;
+            customExprInput.value = presetEquations['pulse'];
+            customExpr = customExprInput.value;
+            wave.length = 0;
+            computeFourierSeries();
+            updateCoefficientsList();
+            updateTabFormulas();
+            updateBottomPanels();
+        });
+
+        // Tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeTab = btn.dataset.tab;
+                document.getElementById('coeffModeTag').textContent = btn.textContent;
+                updateTabFormulas();
+                updateCoefficientsList();
+            });
+        });
+
+        function updateTabFormulas() {
+            const mainF = document.getElementById('mainFormulaMath');
+            const subF = document.getElementById('subFormulaMath');
+
+            let mainLatex = '';
+            let subLatex = '';
+
+            if (activeTab === 'fourier') {
+                if (currentWaveform === 'square') {
+                    mainLatex = 'f(x) = \\frac{4}{\\pi}\\sum_{n=1,3,5\\dots}^{N} \\frac{\\sin(2\\pi n x)}{n}';
+                    subLatex = 'a_n = 0, \\quad b_n = \\frac{2(1 - (-1)^n)}{n\\pi} = \\frac{4}{n\\pi} \\; (n \\text{ odd})';
+                } else if (currentWaveform === 'sawtooth') {
+                    mainLatex = 'f(x) = \\frac{2}{\\pi}\\sum_{n=1}^{N} \\frac{(-1)^{n+1}}{n} \\sin(2\\pi n x)';
+                    subLatex = 'a_n = 0, \\quad b_n = -\\frac{2}{n\\pi}\\cos(n\\pi) = \\frac{2(-1)^{n+1}}{n\\pi}';
+                } else if (currentWaveform === 'triangle') {
+                    mainLatex = 'f(x) = -\\frac{8}{\\pi^2}\\sum_{n=1,3,5\\dots}^{N} \\frac{\\cos(2\\pi n x)}{n^2}';
+                    subLatex = 'a_n = -\\frac{8}{(n\\pi)^2} \\; (n \\text{ odd}), \\quad b_n = 0';
+                } else if (currentWaveform === 'pulse') {
+                    mainLatex = `f(x) \\approx (4d - 2) + \\sum_{n=1}^{N} \\frac{4}{n\\pi}\\sin(n\\pi d)\\cos(2\\pi nx)`;
+                    subLatex = `a_0 = 2(2d-1), \\quad a_n = \\frac{4}{n\\pi}\\sin(n\\pi d), \\quad b_n = 0`;
+                } else if (currentWaveform === 'sine') {
+                    mainLatex = 'f(x) = \\sin(2\\pi x)';
+                    subLatex = 'a_n = 0, \\quad b_1 = 1, \\quad b_{n > 1} = 0';
+                } else {
+                    mainLatex = 'f(x) \\approx \\frac{a_0}{2} + \\sum_{n=1}^{N} [a_n \\cos(2\\pi n x) + b_n \\sin(2\\pi n x)]';
+                    subLatex = 'a_n = 2\\int_0^1 f(x)\\cos(2\\pi nx)\\,dx, \\quad b_n = 2\\int_0^1 f(x)\\sin(2\\pi nx)\\,dx';
+                }
+            } else if (activeTab === 'exponential') {
+                if (currentWaveform === 'square') {
+                    mainLatex = 'f(x) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i 2\\pi n x}, \\quad c_n = \\frac{a_n - i b_n}{2}';
+                    subLatex = 'c_n = \\begin{cases} -\\frac{2i}{n\\pi}, & n \\text{ odd} \\\\ 0, & n \\text{ even} \\end{cases} \\quad (|c_n| = \\frac{2}{n\\pi})';
+                } else if (currentWaveform === 'sawtooth') {
+                    mainLatex = 'f(x) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i 2\\pi n x}, \\quad c_n = \\frac{i(-1)^n}{n\\pi}';
+                    subLatex = '|c_n| = \\frac{1}{n\\pi}, \\quad \\phi_n = \\operatorname{atan2}(-b_n, a_n)';
+                } else if (currentWaveform === 'triangle') {
+                    mainLatex = 'f(x) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i 2\\pi n x}';
+                    subLatex = 'c_n = -\\frac{4}{(n\\pi)^2} \\; (n \\text{ odd}), \\quad c_n = 0 \\; (n \\text{ even})';
+                } else {
+                    mainLatex = 'f(x) \\approx \\sum_{n=-N}^{N} c_n e^{i 2\\pi n x}, \\quad c_n = \\int_0^1 f(x)e^{-i 2\\pi nx}\\,dx';
+                    subLatex = 'c_n = \\frac{a_n - i b_n}{2}, \\quad c_{-n} = c_n^* = \\frac{a_n + i b_n}{2}';
+                }
+            } else if (activeTab === 'half-sine') {
+                mainLatex = 'f(x) \\approx \\sum_{n=1}^{N} b_n \\sin(\\pi n x) \\quad (x \\in [0, 1])';
+                subLatex = 'b_n = 2\\int_0^1 f(x)\\sin(\\pi n x)\\,dx \\quad (\\text{Odd Extension})';
+            } else if (activeTab === 'half-cosine') {
+                mainLatex = 'f(x) \\approx \\frac{a_0}{2} + \\sum_{n=1}^{N} a_n \\cos(\\pi n x) \\quad (x \\in [0, 1])';
+                subLatex = 'a_n = 2\\int_0^1 f(x)\\cos(\\pi n x)\\,dx \\quad (\\text{Even Extension})';
+            }
+
+            renderMathFormula(mainF, mainLatex, 'f(x) evaluated series');
+            renderMathFormula(subF, subLatex, 'evaluated coefficients');
+        }
+
+        function renderMathFormula(elem, latex, fallback) {
+            if (window.katex) {
+                try {
+                    katex.render(latex, elem, { throwOnError: false });
+                    return;
+                } catch (e) { }
+            }
+            elem.textContent = fallback;
+        }
+
+        // Apply Equation Button
+        document.getElementById('applyEquationBtn').addEventListener('click', () => {
+            const input = customExprInput.value.trim();
+            if (!input) return;
+            customExpr = input;
+            currentWaveform = 'custom';
+            waveBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-wave="custom"]').classList.add('active');
+            dutyBox.classList.remove('visible');
+            waveTag.textContent = 'Custom';
+            functionCardTitle.textContent = `Custom: ${input.length > 28 ? input.substring(0, 25) + '...' : input}`;
+            wave.length = 0;
+            computeFourierSeries();
+            updateCoefficientsList();
+            updateTabFormulas();
+            updateBottomPanels();
+        });
+
+        function toSub(n) {
+            const subs = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉', '-': '₋' };
+            return String(n).split('').map(c => subs[c] || c).join('');
+        }
+
+        // Update Coefficients List based on Active Tab
+        function updateCoefficientsList() {
+            const listContainer = document.getElementById('coeffListBox');
+            listContainer.innerHTML = '';
+            const headerLabel = document.getElementById('coeffHeaderLabel');
+
+            if (activeTab === 'fourier') {
+                headerLabel.textContent = 'Coefficients (a₀, aₙ, bₙ, |cₙ| ∠φₙ)';
+
+                // DC offset entry
+                const a0Div = document.createElement('div');
+                a0Div.className = 'coeff-item';
+                let a0Str = 'a_0 = 0';
+                if (currentWaveform === 'pulse') {
+                    a0Str = showDecimal ? `a_0 = ${(2 * (2 * dutyCycle - 1)).toFixed(3)}` : `a_0 = 2(2(${dutyCycle})-1) = ${(2 * (2 * dutyCycle - 1)).toFixed(2)}`;
+                } else if (Math.abs(dcOffset) > 1e-4) {
+                    a0Str = `a_0 = ${(2 * dcOffset).toFixed(3)}`;
+                }
+                const a0Fallback = `DC: ${dcOffset.toFixed(3)}`;
+                a0Div.innerHTML = `<span class="math-val" id="a0-render">${a0Str}</span><span class="approx-val" id="a0-approx">${a0Fallback}</span>`;
+                listContainer.appendChild(a0Div);
+                if (window.katex) {
+                    try {
+                        if (!showDecimal) katex.render(a0Str, a0Div.querySelector('#a0-render'), { throwOnError: false });
+                        katex.render(`a_0 = ${(2 * dcOffset).toFixed(3)}`, a0Div.querySelector('#a0-approx'), { throwOnError: false });
+                    } catch (e) { }
+                }
+
+                const displayHarmonics = harmonics.slice(0, Math.min(numTerms, 12));
+                displayHarmonics.forEach(h => {
+                    const item = document.createElement('div');
+                    item.className = 'coeff-item';
+
+                    let aStr = '';
+                    let bStr = '';
+
+                    if (showDecimal) {
+                        aStr = `a_{${h.n}} = ${h.an.toFixed(3)}`;
+                        bStr = `b_{${h.n}} = ${h.bn.toFixed(3)}`;
+                    } else {
+                        aStr = h.anMath || `a_{${h.n}} = ${h.an.toFixed(3)}`;
+                        bStr = h.bnMath || `b_{${h.n}} = ${h.bn.toFixed(3)}`;
+                    }
+
+                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    const phiLatex = `\\angle ${deg}^\\circ`;
+                    const cLatex = `|c_{${h.n}}| = ${h.cn.toFixed(3)}, \\; ${phiLatex}`;
+                    const cFallback = `|c${toSub(h.n)}| = ${h.cn.toFixed(3)}, ∠${deg}°`;
+
+                    item.innerHTML = `
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <span class="math-val" id="an-render-${h.n}">${aStr}</span>
+                            <span class="math-val" id="bn-render-${h.n}">${bStr}</span>
+                        </div>
+                        <span class="approx-val" id="cn-mag-phase-${h.n}">${cFallback}</span>
+                    `;
+                    listContainer.appendChild(item);
+
+                    if (window.katex) {
+                        try {
+                            if (!showDecimal) {
+                                katex.render(aStr, item.querySelector(`#an-render-${h.n}`), { throwOnError: false });
+                                katex.render(bStr, item.querySelector(`#bn-render-${h.n}`), { throwOnError: false });
+                            }
+                            katex.render(cLatex, item.querySelector(`#cn-mag-phase-${h.n}`), { throwOnError: false });
+                        } catch (e) { }
+                    }
+                });
+            } else if (activeTab === 'exponential') {
+                headerLabel.textContent = 'Complex Coefficients (c₀, cₙ, c₋ₙ, |cₙ| ∠φₙ)';
+
+                // c0 entry
+                const c0Div = document.createElement('div');
+                c0Div.className = 'coeff-item';
+                let c0Str = `c_0 = ${(dcOffset).toFixed(3)}`;
+                c0Div.innerHTML = `<span class="math-val" id="c0-render">${c0Str}</span><span class="approx-val" id="c0-approx">c₀ = a₀/2</span>`;
+                listContainer.appendChild(c0Div);
+                if (window.katex) {
+                    try {
+                        katex.render(c0Str, c0Div.querySelector('#c0-render'), { throwOnError: false });
+                        katex.render(`c_0 = \\frac{a_0}{2} = ${(dcOffset).toFixed(3)}`, c0Div.querySelector('#c0-approx'), { throwOnError: false });
+                    } catch (e) { }
+                }
+
+                const displayHarmonics = harmonics.slice(0, Math.min(numTerms, 12));
+                displayHarmonics.forEach(h => {
+                    const item = document.createElement('div');
+                    item.className = 'coeff-item';
+
+                    let cnStr = '';
+                    let cNegStr = '';
+                    const halfBn = h.bn / 2;
+                    const halfAn = h.an / 2;
+
+                    if (showDecimal) {
+                        if (Math.abs(halfBn) < 1e-4) {
+                            cnStr = `c_{${h.n}} = ${halfAn.toFixed(3)}`;
+                            cNegStr = `c_{-${h.n}} = ${halfAn.toFixed(3)}`;
+                        } else if (Math.abs(halfAn) < 1e-4) {
+                            cnStr = `c_{${h.n}} = -${halfBn.toFixed(3)}i`;
+                            cNegStr = `c_{-${h.n}} = +${halfBn.toFixed(3)}i`;
+                        } else {
+                            cnStr = `c_{${h.n}} = ${halfAn.toFixed(3)} - ${halfBn.toFixed(3)}i`;
+                            cNegStr = `c_{-${h.n}} = ${halfAn.toFixed(3)} + ${halfBn.toFixed(3)}i`;
+                        }
+                    } else {
+                        if (currentWaveform === 'square') {
+                            cnStr = `c_{${h.n}} = -\\frac{2i}{${h.n}\\pi}`;
+                            cNegStr = `c_{-${h.n}} = \\frac{2i}{${h.n}\\pi}`;
+                        } else if (currentWaveform === 'sawtooth') {
+                            const sign = (h.n % 2 === 0 ? '' : '-');
+                            cnStr = `c_{${h.n}} = ${sign}\\frac{i}{${h.n}\\pi}`;
+                            cNegStr = `c_{-${h.n}} = ${sign === '-' ? '' : '-'}\\frac{i}{${h.n}\\pi}`;
+                        } else if (currentWaveform === 'triangle') {
+                            const k = (h.n - 1) / 2;
+                            const sign = (k % 2 === 0 ? '-' : '');
+                            cnStr = `c_{${h.n}} = ${sign}\\frac{4i}{(${h.n}\\pi)^2}`;
+                            cNegStr = `c_{-${h.n}} = ${sign === '-' ? '' : '-'}\\frac{4i}{(${h.n}\\pi)^2}`;
+                        } else if (currentWaveform === 'sine') {
+                            cnStr = h.n === 1 ? `c_1 = -\\frac{i}{2}` : `c_{${h.n}} = 0`;
+                            cNegStr = h.n === 1 ? `c_{-1} = \\frac{i}{2}` : `c_{-${h.n}} = 0`;
+                        } else {
+                            cnStr = `c_{${h.n}} = ${(halfAn).toFixed(3)} - ${(halfBn).toFixed(3)}i`;
+                            cNegStr = `c_{-${h.n}} = ${(halfAn).toFixed(3)} + ${(halfBn).toFixed(3)}i`;
+                        }
+                    }
+
+                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    const phiLatex = `\\angle ${deg}^\\circ`;
+                    const cLatex = `|c_{${h.n}}| = ${(h.cn / 2).toFixed(3)}, \\; ${phiLatex}`;
+                    const cFallback = `|c${toSub(h.n)}| = ${(h.cn / 2).toFixed(3)}, ∠${deg}°`;
+
+                    item.innerHTML = `
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <span class="math-val" id="cn-render-${h.n}">${cnStr}</span>
+                            <span class="math-val" id="cneg-render-${h.n}">${cNegStr}</span>
+                        </div>
+                        <span class="approx-val" id="cn-mag-phase-exp-${h.n}">${cFallback}</span>
+                    `;
+                    listContainer.appendChild(item);
+
+                    if (window.katex) {
+                        try {
+                            katex.render(cnStr, item.querySelector(`#cn-render-${h.n}`), { throwOnError: false });
+                            katex.render(cNegStr, item.querySelector(`#cneg-render-${h.n}`), { throwOnError: false });
+                            katex.render(cLatex, item.querySelector(`#cn-mag-phase-exp-${h.n}`), { throwOnError: false });
+                        } catch (e) { }
+                    }
+                });
+            } else if (activeTab === 'half-sine') {
+                headerLabel.textContent = 'Half-Range Sine Coefficients (bₙ for sin(nπx))';
+                const display = halfSineHarmonics.slice(0, Math.min(numTerms, 12));
+                display.forEach(h => {
+                    const item = document.createElement('div');
+                    item.className = 'coeff-item';
+                    let bStr = `b_{${h.n}} = ${h.bn.toFixed(3)}`;
+                    if (!showDecimal) {
+                        if (currentWaveform === 'square') {
+                            bStr = h.n % 2 !== 0 ? `b_{${h.n}} = \\frac{4}{${h.n}\\pi}` : `b_{${h.n}} = 0`;
+                        } else if (currentWaveform === 'sawtooth') {
+                            bStr = h.n % 2 === 0 ? `b_{${h.n}} = -\\frac{4}{${h.n}\\pi}` : `b_{${h.n}} = 0`;
+                        }
+                    }
+                    const bLatex = `b_{${h.n}} = ${h.bn.toFixed(3)}`;
+                    const bFallback = `b${toSub(h.n)} = ${h.bn.toFixed(3)}`;
+                    item.innerHTML = `
+                        <span class="math-val" id="hs-render-${h.n}">${bStr}</span>
+                        <span class="approx-val" id="hs-approx-${h.n}">${bFallback}</span>
+                    `;
+                    listContainer.appendChild(item);
+                    if (window.katex) {
+                        try {
+                            if (!showDecimal) katex.render(bStr, item.querySelector(`#hs-render-${h.n}`), { throwOnError: false });
+                            katex.render(bLatex, item.querySelector(`#hs-approx-${h.n}`), { throwOnError: false });
+                        } catch (e) { }
+                    }
+                });
+            } else if (activeTab === 'half-cosine') {
+                headerLabel.textContent = 'Half-Range Cosine Coefficients (a₀, aₙ for cos(nπx))';
+                // DC entry
+                const a0Div = document.createElement('div');
+                a0Div.className = 'coeff-item';
+                let a0Str = `a_0 = ${(2 * dcOffset).toFixed(3)}`;
+                a0Div.innerHTML = `<span class="math-val" id="hc-a0-render">${a0Str}</span><span class="approx-val" id="hc-a0-approx">a₀ = ${(2 * dcOffset).toFixed(3)}</span>`;
+                listContainer.appendChild(a0Div);
+                if (window.katex) {
+                    try {
+                        katex.render(a0Str, a0Div.querySelector('#hc-a0-render'), { throwOnError: false });
+                        katex.render(`a_0 = ${(2 * dcOffset).toFixed(3)}`, a0Div.querySelector('#hc-a0-approx'), { throwOnError: false });
+                    } catch (e) { }
+                }
+
+                const display = halfCosineHarmonics.slice(0, Math.min(numTerms, 12));
+                display.forEach(h => {
+                    const item = document.createElement('div');
+                    item.className = 'coeff-item';
+                    let aStr = `a_{${h.n}} = ${h.an.toFixed(3)}`;
+                    if (!showDecimal) {
+                        if (currentWaveform === 'sawtooth') {
+                            aStr = h.n % 2 !== 0 ? `a_{${h.n}} = -\\frac{8}{(${h.n}\\pi)^2}` : `a_{${h.n}} = 0`;
+                        }
+                    }
+                    const aLatex = `a_{${h.n}} = ${h.an.toFixed(3)}`;
+                    const aFallback = `a${toSub(h.n)} = ${h.an.toFixed(3)}`;
+                    item.innerHTML = `
+                        <span class="math-val" id="hc-render-${h.n}">${aStr}</span>
+                        <span class="approx-val" id="hc-approx-${h.n}">${aFallback}</span>
+                    `;
+                    listContainer.appendChild(item);
+                    if (window.katex) {
+                        try {
+                            if (!showDecimal) katex.render(aStr, item.querySelector(`#hc-render-${h.n}`), { throwOnError: false });
+                            katex.render(aLatex, item.querySelector(`#hc-approx-${h.n}`), { throwOnError: false });
+                        } catch (e) { }
+                    }
+                });
+            }
+        }
+
+        // Bottom Panels: Amplitude, Phase, Gibbs with Autoscale, Gridlines, and Markings
+        function updateBottomPanels() {
+            drawAmplitudeSpectrum();
+            drawPhaseSpectrum();
+            drawGibbsPhenomenon();
+        }
+
+        function drawAmplitudeSpectrum() {
+            const w = ampCanvas.width;
+            const h = ampCanvas.height;
+            ampCtx.clearRect(0, 0, w, h);
+
+            const K = spectrumTerms;
+            const padLeft = 30;
+            const padRight = 8;
+            const padTop = 10;
+            const padBottom = 22; // Generous bottom space for X labels
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+
+            // Autoscale calculation
+            let maxAmp = 0.05;
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                if (harmonics[i].cn > maxAmp) maxAmp = harmonics[i].cn;
+            }
+            const niceMax = Math.max(0.5, Math.ceil(maxAmp * 1.15 * 2) / 2);
+
+            // Draw horizontal gridlines and Y-axis markings
+            ampCtx.textAlign = 'right';
+            ampCtx.textBaseline = 'middle';
+            ampCtx.font = '9px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+            const numGridLines = 3;
+            for (let g = 0; g <= numGridLines; g++) {
+                const frac = g / numGridLines;
+                const y = padTop + plotH * (1 - frac);
+                const val = (niceMax * frac).toFixed(1);
+
+                ampCtx.strokeStyle = g === 0 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)';
+                ampCtx.lineWidth = 1;
+                ampCtx.beginPath();
+                ampCtx.moveTo(padLeft, y);
+                ampCtx.lineTo(w - padRight, y);
+                ampCtx.stroke();
+
+                ampCtx.fillStyle = '#9aa0c2';
+                ampCtx.fillText(val, padLeft - 4, y);
+            }
+
+            // Draw X-Axis Baseline
+            ampCtx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ampCtx.lineWidth = 1.2;
+            ampCtx.beginPath();
+            ampCtx.moveTo(padLeft, padTop + plotH);
+            ampCtx.lineTo(w - padRight, padTop + plotH);
+            ampCtx.stroke();
+
+            // Draw Amplitude Bars & X markings
+            const barW = Math.max(3, plotW / K - 3);
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                const x = padLeft + i * (plotW / K) + 1.5;
+                const amp = harmonics[i].cn;
+                const barH = (amp / niceMax) * plotH;
+                const y = padTop + plotH - barH;
+
+                const grad = ampCtx.createLinearGradient(x, y, x, padTop + plotH);
+                grad.addColorStop(0, '#4facfe');
+                grad.addColorStop(1, '#00f2fe');
+
+                ampCtx.fillStyle = grad;
+                ampCtx.fillRect(x, y, barW, barH);
+
+                // X-Axis Harmonic Labels
+                const showLabel = K <= 16 || (i + 1) % 2 !== 0 || i === 0;
+                if (showLabel) {
+                    ampCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+                    ampCtx.lineWidth = 1;
+                    ampCtx.beginPath();
+                    ampCtx.moveTo(x + barW / 2, padTop + plotH);
+                    ampCtx.lineTo(x + barW / 2, padTop + plotH + 3);
+                    ampCtx.stroke();
+
+                    ampCtx.fillStyle = '#e6e8f5';
+                    ampCtx.textAlign = 'center';
+                    ampCtx.textBaseline = 'top';
+                    ampCtx.font = '9px monospace';
+                    ampCtx.fillText(harmonics[i].n, x + barW / 2, padTop + plotH + 4);
+                }
+            }
+        }
+
+        function drawPhaseSpectrum() {
+            const w = phaseCanvas.width;
+            const h = phaseCanvas.height;
+            phaseCtx.clearRect(0, 0, w, h);
+
+            const K = spectrumTerms;
+            const padLeft = 30;
+            const padRight = 8;
+            const padTop = 10;
+            const padBottom = 22; // Generous bottom space for X labels
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+            const centerY = padTop + plotH / 2;
+
+            // Phase markings: +π, +π/2, 0, -π/2, -π
+            const phaseTicks = [
+                { frac: 1.0, label: '+π' },
+                { frac: 0.5, label: '+π/2' },
+                { frac: 0.0, label: '0' },
+                { frac: -0.5, label: '-π/2' },
+                { frac: -1.0, label: '-π' }
+            ];
+
+            phaseCtx.textAlign = 'right';
+            phaseCtx.textBaseline = 'middle';
+            phaseCtx.font = '9px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+            phaseTicks.forEach(tick => {
+                const y = centerY - tick.frac * (plotH / 2);
+
+                phaseCtx.strokeStyle = tick.frac === 0 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)';
+                phaseCtx.lineWidth = 1;
+                phaseCtx.setLineDash(tick.frac === 0 ? [] : [2, 2]);
+                phaseCtx.beginPath();
+                phaseCtx.moveTo(padLeft, y);
+                phaseCtx.lineTo(w - padRight, y);
+                phaseCtx.stroke();
+                phaseCtx.setLineDash([]);
+
+                phaseCtx.fillStyle = '#9aa0c2';
+                phaseCtx.fillText(tick.label, padLeft - 4, y);
+            });
+
+            // Draw Bottom Box Axis
+            phaseCtx.strokeStyle = 'rgba(255,255,255,0.35)';
+            phaseCtx.lineWidth = 1.2;
+            phaseCtx.beginPath();
+            phaseCtx.moveTo(padLeft, padTop + plotH);
+            phaseCtx.lineTo(w - padRight, padTop + plotH);
+            phaseCtx.stroke();
+
+            // Draw Phase Stems
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                const x = padLeft + i * (plotW / K) + (plotW / K) / 2;
+                const phi = harmonics[i].cn > 0.02 ? Math.atan2(-harmonics[i].bn, harmonics[i].an) : 0;
+                const y = centerY - (phi / Math.PI) * (plotH / 2);
+
+                // Stem line
+                phaseCtx.strokeStyle = 'rgba(56, 239, 125, 0.75)';
+                phaseCtx.lineWidth = 1.5;
+                phaseCtx.beginPath();
+                phaseCtx.moveTo(x, centerY);
+                phaseCtx.lineTo(x, y);
+                phaseCtx.stroke();
+
+                // Dot head
+                phaseCtx.fillStyle = '#38ef7d';
+                phaseCtx.beginPath();
+                phaseCtx.arc(x, y, 2.4, 0, 2 * Math.PI);
+                phaseCtx.fill();
+
+                // Small tick at baseline
+                const showLabel = K <= 16 || (i + 1) % 2 !== 0 || i === 0;
+                if (showLabel) {
+                    phaseCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+                    phaseCtx.lineWidth = 1;
+                    phaseCtx.beginPath();
+                    phaseCtx.moveTo(x, padTop + plotH);
+                    phaseCtx.lineTo(x, padTop + plotH + 3);
+                    phaseCtx.stroke();
+
+                    phaseCtx.fillStyle = '#e6e8f5';
+                    phaseCtx.textAlign = 'center';
+                    phaseCtx.textBaseline = 'top';
+                    phaseCtx.font = '9px monospace';
+                    phaseCtx.fillText(harmonics[i].n, x, padTop + plotH + 4);
+                }
+            }
+        }
+
+        function drawGibbsPhenomenon() {
+            const badge = document.getElementById('gibbsBadge');
+            const pctElem = document.getElementById('overshootPct');
+            const formulaBox = document.getElementById('gibbsFormulaBox');
+
+            const hasDiscontinuity = ['square', 'sawtooth', 'pulse'].includes(currentWaveform);
+
+            if (hasDiscontinuity) {
+                let peak = 0;
+                const active = harmonics.slice(0, numTerms);
+                for (let i = 0; i <= 200; i++) {
+                    const x = i * (0.2 / 200);
+                    let val = dcOffset;
+                    active.forEach(h => {
+                        val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
+                    });
+                    if (val > peak) peak = val;
+                }
+                const pct = Math.max(0, ((peak - 1.0) / 1.0) * 100).toFixed(2);
+                badge.textContent = `+${pct}%`;
+                pctElem.textContent = `${pct}% (Limit: 8.95%)`;
+                renderMathFormula(formulaBox, '\\Delta = \\frac{1}{\\pi}\\int_0^\\pi \\frac{\\sin t}{t}dt - \\frac{1}{2} \\approx 8.949\\%', 'Δ = (1/π) ∫₀^π (sin t / t) dt - 1/2 ≈ 8.949%');
+            } else {
+                badge.textContent = `0.00%`;
+                pctElem.textContent = `0.00% (Smooth wave)`;
+                formulaBox.textContent = 'Continuous signal (No Gibbs ripple)';
+            }
+
+            const gw = gibbsCanvas.width;
+            const gh = gibbsCanvas.height;
+            gibbsCtx.clearRect(0, 0, gw, gh);
+
+            const midY = gh * 0.45;
+            gibbsCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+            gibbsCtx.lineWidth = 1;
+            gibbsCtx.setLineDash([2, 2]);
+            gibbsCtx.beginPath();
+            gibbsCtx.moveTo(0, midY);
+            gibbsCtx.lineTo(gw, midY);
+            gibbsCtx.stroke();
+            gibbsCtx.setLineDash([]);
+
+            gibbsCtx.strokeStyle = '#ff7e5f';
+            gibbsCtx.lineWidth = 1.8;
+            gibbsCtx.beginPath();
+
+            const active = harmonics.slice(0, numTerms);
+            for (let px = 0; px < gw; px++) {
+                const x = (px / gw) * 0.28;
+                let val = dcOffset;
+                active.forEach(h => {
+                    val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
+                });
+                const py = midY - val * (gh * 0.35);
+                if (px === 0) gibbsCtx.moveTo(px, py);
+                else gibbsCtx.lineTo(px, py);
+            }
+            gibbsCtx.stroke();
+        }
+
+        // Thumbnail icons generator
+        function initThumbnails() {
+            const types = ['sine', 'triangle', 'square', 'sawtooth', 'pulse', 'custom'];
+            types.forEach(t => {
+                const icon = document.getElementById(`icon-${t}`);
+                if (!icon) return;
+                const c = icon.getContext('2d');
+                const w = icon.width = 38;
+                const h = icon.height = 20;
+                c.strokeStyle = '#feb47b';
+                c.lineWidth = 1.5;
+                c.beginPath();
+
+                for (let px = 0; px < w; px++) {
+                    const x = px / w;
+                    let y = 0;
+                    if (t === 'sine') y = Math.sin(2 * Math.PI * x);
+                    else if (t === 'triangle') y = 1 - 4 * Math.abs(x - 0.5);
+                    else if (t === 'square') y = x < 0.5 ? 0.8 : -0.8;
+                    else if (t === 'sawtooth') y = 2 * x - 1;
+                    else if (t === 'pulse') y = x < 0.25 ? 0.8 : -0.8;
+                    else if (t === 'custom') y = Math.sin(2 * Math.PI * x) * 0.7 + Math.sin(6 * Math.PI * x) * 0.3;
+
+                    const py = h / 2 - y * (h * 0.35);
+                    if (px === 0) c.moveTo(px, py);
+                    else c.lineTo(px, py);
+                }
+                c.stroke();
+            });
+        }
+
+        // Ultra-Smooth Continuous Drawing Engine
+        function setupDrawModal() {
+            const modal = document.getElementById('drawModal');
+            document.getElementById('openDrawModalBtn').addEventListener('click', () => {
+                modal.classList.add('open');
+                setTimeout(() => {
+                    resizeCanvases();
+                    renderDrawnCanvas();
+                }, 50);
+            });
+            document.getElementById('closeDrawModalBtn').addEventListener('click', () => modal.classList.remove('open'));
+
+            let isDrawing = false;
+            let lastPos = null;
+            let minDrawnX = 1;
+            let maxDrawnX = 0;
+
+            function getPos(e) {
+                const r = drawCanvas.getBoundingClientRect();
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const cy = e.touches ? e.touches[0].clientY : e.clientY;
+                const x = Math.max(0, Math.min(1, (cx - r.left) / r.width));
+                const y = Math.max(-1, Math.min(1, -((cy - r.top) / r.height * 2 - 1)));
+                return { x, y };
+            }
+
+            function applySegment(p0, p1) {
+                const idx0 = Math.floor(p0.x * (DRAW_RES - 1));
+                const idx1 = Math.floor(p1.x * (DRAW_RES - 1));
+
+                const start = Math.min(idx0, idx1);
+                const end = Math.max(idx0, idx1);
+
+                if (start === end) {
+                    drawnPoints[start] = p1.y;
+                } else {
+                    for (let i = start; i <= end; i++) {
+                        const t = (i - idx0) / (idx1 - idx0);
+                        drawnPoints[i] = p0.y + (p1.y - p0.y) * t;
+                    }
+                }
+
+                if (p1.x < minDrawnX) minDrawnX = p1.x;
+                if (p1.x > maxDrawnX) maxDrawnX = p1.x;
+                if (p0.x < minDrawnX) minDrawnX = p0.x;
+                if (p0.x > maxDrawnX) maxDrawnX = p0.x;
+            }
+
+            function fillUnreachedEdges() {
+                const startIdx = Math.floor(minDrawnX * (DRAW_RES - 1));
+                const endIdx = Math.floor(maxDrawnX * (DRAW_RES - 1));
+                const firstVal = drawnPoints[startIdx] || 0;
+                const lastVal = drawnPoints[endIdx] || 0;
+
+                for (let i = 0; i < startIdx; i++) drawnPoints[i] = firstVal;
+                for (let i = endIdx + 1; i < DRAW_RES; i++) drawnPoints[i] = lastVal;
+            }
+
+            function handleStart(e) {
+                isDrawing = true;
+                hasDrawn = true;
+                lastPos = getPos(e);
+                const idx = Math.floor(lastPos.x * (DRAW_RES - 1));
+                drawnPoints[idx] = lastPos.y;
+                minDrawnX = lastPos.x;
+                maxDrawnX = lastPos.x;
+                renderDrawnCanvas();
+            }
+
+            function handleMove(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                applySegment(lastPos, pos);
+                lastPos = pos;
+                renderDrawnCanvas();
+            }
+
+            function handleEnd() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                lastPos = null;
+                fillUnreachedEdges();
+                renderDrawnCanvas();
+            }
+
+            drawCanvas.addEventListener('mousedown', handleStart);
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+
+            drawCanvas.addEventListener('touchstart', handleStart, { passive: false });
+            window.addEventListener('touchmove', handleMove, { passive: false });
+            window.addEventListener('touchend', handleEnd);
+
+            document.getElementById('clearDrawBtn').addEventListener('click', () => {
+                drawnPoints.fill(0);
+                hasDrawn = false;
+                minDrawnX = 1;
+                maxDrawnX = 0;
+                renderDrawnCanvas();
+            });
+
+            document.getElementById('smoothDrawBtn').addEventListener('click', () => {
+                const sm = new Float64Array(DRAW_RES);
+                for (let i = 0; i < DRAW_RES; i++) {
+                    const prev = drawnPoints[Math.max(0, i - 1)];
+                    const curr = drawnPoints[i];
+                    const next = drawnPoints[Math.min(DRAW_RES - 1, i + 1)];
+                    sm[i] = (prev + 2 * curr + next) / 4;
+                }
+                drawnPoints.set(sm);
+                renderDrawnCanvas();
+            });
+
+            document.getElementById('useDrawnBtn').addEventListener('click', () => {
+                currentWaveform = 'drawn';
+                modal.classList.remove('open');
+                waveBtns.forEach(b => b.classList.remove('active'));
+                dutyBox.classList.remove('visible');
+                waveTag.textContent = 'Drawn';
+                functionCardTitle.textContent = 'Drawn Waveform: f(x)';
+                customExprInput.value = 'Drawn function (sampled 1024 points)';
+                wave.length = 0;
+                computeFourierSeries();
+                updateCoefficientsList();
+                updateTabFormulas();
+                updateBottomPanels();
+            });
+        }
+
+        function renderDrawnCanvas() {
+            const w = drawCanvas.width;
+            const h = drawCanvas.height;
+            drawCtx.clearRect(0, 0, w, h);
+
+            drawCtx.strokeStyle = 'rgba(255,255,255,0.15)';
+            drawCtx.lineWidth = 1;
+            drawCtx.beginPath();
+            drawCtx.moveTo(0, h / 2);
+            drawCtx.lineTo(w, h / 2);
+            drawCtx.stroke();
+
+            if (!hasDrawn) return;
+
+            drawCtx.strokeStyle = '#feb47b';
+            drawCtx.lineWidth = 2.5;
+            drawCtx.beginPath();
+            for (let i = 0; i < DRAW_RES; i++) {
+                const px = (i / (DRAW_RES - 1)) * w;
+                const py = h / 2 - drawnPoints[i] * (h * 0.4);
+                if (i === 0) drawCtx.moveTo(px, py);
+                else drawCtx.lineTo(px, py);
+            }
+            drawCtx.stroke();
+        }
+
+        // Init App
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvases();
+            initThumbnails();
+            setupDrawModal();
+            computeFourierSeries();
+            updateCoefficientsList();
+            updateTabFormulas();
+            updateBottomPanels();
+            animate();
+        });
+    </script>
+</body>
+
+</html>
