@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fourier Series & Epicycles Interactive Laboratory</title>
-    <!-- KaTeX for math rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <style>
         :root {
             --bg-main: #0b0918;
@@ -21,6 +18,52 @@
             --text-main: #e6e8f5;
             --text-dim: #9aa0c2;
             --slider-track: #2a254d;
+        }
+
+        /* Pure CSS Offline Math Typography */
+        .math-expr, .math-val, .main-formula, .sub-formula {
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+            letter-spacing: 0.02em;
+        }
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: -0.45em;
+            text-align: center;
+            padding: 0 2px;
+            font-size: 0.9em;
+            line-height: 1;
+        }
+        .frac > .num {
+            border-bottom: 1px solid currentColor;
+            padding-bottom: 1px;
+            line-height: 1;
+        }
+        .frac > .den {
+            padding-top: 1px;
+            line-height: 1;
+        }
+        .cases-block {
+            display: inline-flex;
+            align-items: center;
+            text-align: left;
+            margin: 2px 0;
+        }
+        .cases-brace {
+            font-size: 1.8em;
+            font-weight: 200;
+            line-height: 1;
+            margin-right: 4px;
+            user-select: none;
+        }
+        .cases-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .case-row {
+            display: flex;
+            gap: 8px;
         }
 
         * {
@@ -281,27 +324,37 @@
         }
 
         .math-hero-box {
+            max-height: 110px;
             background: rgba(0, 0, 0, 0.32);
             border-radius: 7px;
-            padding: 6px 8px;
+            padding: 5px 8px;
             border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
+            flex-shrink: 0;
+            overflow-y: auto;
         }
 
         .main-formula {
-            font-size: 0.84rem;
+            font-size: 0.80rem;
             color: #feb47b;
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.25;
+            flex-shrink: 0;
         }
 
         .sub-formula {
-            font-size: 0.74rem;
-            color: #38ef7d;
+            font-size: 0.84rem;
+            color: var(--text-main);
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.25;
+            max-height: 72px;
+            overflow-y: auto;
+        }
+
+        .sub-formula .katex-display {
+            margin: 0;
         }
 
         .coeff-header-row {
@@ -354,7 +407,7 @@
         }
 
         .coeff-list-box {
-            flex: 1;
+            flex: 1 1 140px;
             background: rgba(0, 0, 0, 0.25);
             border-radius: 7px;
             padding: 4px 6px;
@@ -362,7 +415,7 @@
             display: flex;
             flex-direction: column;
             gap: 3px;
-            min-height: 80px;
+            min-height: 140px;
         }
 
         .coeff-item {
@@ -405,6 +458,21 @@
             background: #110e24;
             display: flex;
             border-radius: 11px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 5px 9px;
+            color: var(--text-main);
+            background: var(--card-bg);
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         #fourierCanvas {
@@ -495,7 +563,7 @@
 
         /* THREE PANELS ROW */
         .bottom-panels-grid {
-            height: 172px;
+            height: 206px;
             display: grid;
             grid-template-columns: 1fr 1fr 1.25fr;
             grid-template-rows: 1fr auto;
@@ -574,6 +642,7 @@
             justify-content: space-between;
             font-size: 0.68rem;
             gap: 2px;
+            min-height: 0;
         }
 
         .gibbs-stat-row {
@@ -595,10 +664,118 @@
         }
 
         #gibbsCanvas {
-            height: 48px;
+            flex: 1;
+            min-height: 90px;
+            height: auto;
             width: 100%;
+            display: block;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 4px;
+        }
+
+        /* Modal Popup for Draw Equation */
+        body.light-mode {
+            --bg-main: #edf2f3;
+            --card-bg: #ffffff;
+            --card-border: rgba(31, 53, 61, 0.18);
+            --text-main: #20353d;
+            --text-dim: #62777d;
+            --slider-track: #cbd8da;
+        }
+
+        body.light-mode .app-layout {
+            background: radial-gradient(circle at 80% 20%, #dcebec 0%, #edf2f3 100%);
+        }
+
+        body.light-mode .card,
+        body.light-mode .sub-panel,
+        body.light-mode .controls-row,
+        body.light-mode .options-row {
+            box-shadow: 0 3px 14px rgba(31, 53, 61, 0.08);
+        }
+
+        body.light-mode .controls-row,
+        body.light-mode .options-row,
+        body.light-mode .spectrum-slider-bar {
+            background: #ffffff;
+            border-color: rgba(31, 53, 61, 0.18);
+        }
+
+        body.light-mode .toggle-switch {
+            background: #b9cacc;
+        }
+
+        body.light-mode .toggle-checkbox:checked+.toggle-switch {
+            background: var(--accent-coral);
+        }
+
+        body.light-mode .card-title,
+        body.light-mode .panel-title,
+        body.light-mode .wave-info .name,
+        body.light-mode .modal-header h3,
+        body.light-mode .opt-item strong {
+            color: #20353d !important;
+        }
+
+        body.light-mode .canvas-card {
+            background: #f8fbfb;
+        }
+
+        body.light-mode .gibbs-panel {
+            background: linear-gradient(145deg, #ffffff, #edf5f5);
+        }
+
+        body.light-mode .chart-canvas,
+        body.light-mode #gibbsCanvas {
+            background: #f2f7f7;
+        }
+
+        body.light-mode .custom-input,
+        body.light-mode .coeff-list-box,
+        body.light-mode .math-hero-box,
+        body.light-mode .coeff-tabs,
+        body.light-mode .gibbs-stat-row,
+        body.light-mode .gibbs-formula,
+        body.light-mode .duty-cycle-box {
+            background: #f1f6f6;
+            color: #20353d;
+            border-color: rgba(31, 53, 61, 0.16);
+        }
+
+        body.light-mode .custom-input:focus {
+            background: #ffffff;
+        }
+
+        body.light-mode .coeff-item {
+            background: rgba(32, 53, 61, 0.045);
+        }
+
+        body.light-mode .coeff-item .math-val {
+            color: #20353d;
+        }
+
+        body.light-mode .tab-btn.active {
+            color: #20353d;
+            background: rgba(32, 53, 61, 0.1);
+        }
+
+        body.light-mode .wave-btn {
+            background: rgba(32, 53, 61, 0.025);
+            border-color: rgba(32, 53, 61, 0.12);
+        }
+
+        body.light-mode .modal-overlay {
+            background: rgba(27, 44, 49, 0.45);
+        }
+
+        body.light-mode .modal-card {
+            background: #ffffff;
+            border-color: rgba(31, 53, 61, 0.2);
+        }
+
+        body.light-mode #drawCanvas {
+            background: #f6fafa;
+            border-color: rgba(31, 53, 61, 0.28);
         }
 
         /* Modal Popup for Draw Equation */
@@ -744,8 +921,7 @@
                 </div>
                 <textarea class="custom-input" id="customExpr" spellcheck="false">x < 0.5 ? 1 : -1</textarea>
                 <div class="custom-hint">
-                    Use <strong>x</strong> in [0, 1]. Supported: sin, cos, tan, asin, acos, atan, exp, sqrt, abs, log,
-                    ln, floor, ceil, sign, min, max, pi, e. Powers use ^.
+                    Use <strong>x</strong> in [0, 1]. Solves closed-form Bessel <em>exp(0.8*cos(2*pi*x))</em>, polynomials <em>x^2</em>, exponentials <em>exp(2x)</em>, CAS integrals & piecewises. Enter to apply.
                 </div>
                 <div class="btn-group">
                     <button class="action-btn" id="openDrawModalBtn">
@@ -801,6 +977,7 @@
         <div class="right-col">
             <!-- 1. Epicycle Animation Canvas -->
             <div class="canvas-card">
+                <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Light mode</button>
                 <canvas id="fourierCanvas"></canvas>
             </div>
 
@@ -811,7 +988,7 @@
                         <span>Number of Terms:</span>
                         <span class="val-num" id="termsValue">5</span>
                     </div>
-                    <input type="range" id="terms" min="1" max="100" value="5">
+                    <input type="range" id="terms" min="1" max="32" value="5">
                 </div>
                 <div class="slider-group">
                     <div class="slider-label">
@@ -844,8 +1021,6 @@
                         <div class="toggle-switch"></div>
                         <strong style="color:#fff;">Concentric circles</strong>
                     </label>
-                    <span class="opt-desc">Tip-to-tail is a vector chain. Concentric mode collapses circles to
-                        center.</span>
                 </div>
             </div>
 
@@ -945,9 +1120,10 @@
         const specTermsVal = document.getElementById('specTermsVal');
         const functionCardTitle = document.getElementById('functionCardTitle');
         const customExprInput = document.getElementById('customExpr');
+        const themeToggle = document.getElementById('themeToggle');
 
         // State variables
-        let numTerms = parseInt(termsSlider.value);
+        let numTerms = Math.min(32, Math.max(1, parseInt(termsSlider.value)));
         let speed = parseFloat(speedSlider.value);
         let scale = parseFloat(scaleSlider.value);
         let isAnimating = true;
@@ -959,11 +1135,16 @@
         let dutyCycle = 0.25;
         let activeTab = 'fourier';
         let customExpr = 'x < 0.5 ? 1 : -1';
+        let currentCustomSolution = null;
 
         // High resolution continuous buffer for drawing (1024 points)
         const DRAW_RES = 1024;
+        const MAX_HARMONICS = 100;
         let drawnPoints = new Float64Array(DRAW_RES);
         let hasDrawn = false;
+        let compiledCustomExprText = '';
+        let compiledCustomFunction = null;
+        let isLightMode = false;
 
         let time = 0;
         const wave = [];
@@ -974,6 +1155,10 @@
         let halfSineHarmonics = [];
         let halfCosineHarmonics = [];
         let dcOffset = 0;
+        let coefficientSamples = null;
+
+        // Flag: flush wave buffer at next frame boundary after harmonics change
+        let harmonicsSwapNeeded = false;
 
         // Preset equations
         const presetEquations = {
@@ -982,7 +1167,7 @@
             'triangle': '1 - 4*abs(x - 0.5)',
             'sawtooth': '2*x - 1',
             'pulse': 'x < 0.25 ? 1 : -1',
-            'custom': 'sin(2*pi*x) + 0.4*sin(6*pi*x)'
+            'custom': 'exp(0.8*cos(2*pi*x))'
         };
 
         const presetTitles = {
@@ -998,7 +1183,7 @@
         // Resize handler with devicePixelRatio support
         function resizeCanvases() {
             const fit = (c, context) => {
-                const rect = c.parentElement.getBoundingClientRect();
+                const rect = c.getBoundingClientRect();
                 c.width = rect.width;
                 c.height = rect.height;
             };
@@ -1015,32 +1200,395 @@
 
         window.addEventListener('resize', resizeCanvases);
 
+        function setTheme(light) {
+            isLightMode = light;
+            document.body.classList.toggle('light-mode', isLightMode);
+            themeToggle.textContent = isLightMode ? 'Dark mode' : 'Light mode';
+            themeToggle.setAttribute('aria-pressed', String(isLightMode));
+            try { localStorage.setItem('fourier-theme', isLightMode ? 'light' : 'dark'); } catch (e) { }
+        }
+
+        themeToggle.addEventListener('click', () => setTheme(!isLightMode));
+
+        // -------------------------------------------------------------
+        // FourierCAS: Advanced Symbolic & Analytical Integration Engine
+        // -------------------------------------------------------------
+        const FourierCAS = (function () {
+            // Modified Bessel function of the first kind I_n(z)
+            function besselI(n, z) {
+                let sum = 0;
+                const absZ = Math.abs(z);
+                let term = Math.pow(absZ / 2, n);
+                let factN = 1;
+                for (let i = 1; i <= n; i++) factN *= i;
+                term /= factN;
+                sum += term;
+                for (let k = 1; k < 75; k++) {
+                    term *= (z / 2) * (z / 2) / (k * (n + k));
+                    sum += term;
+                    if (Math.abs(term) < 1e-15 * Math.abs(sum)) break;
+                }
+                if (z < 0 && (n % 2 !== 0)) sum = -sum;
+                return isFinite(sum) ? sum : 0;
+            }
+
+            // Ordinary Bessel function of the first kind J_n(z)
+            function besselJ(n, z) {
+                let sum = 0;
+                const absZ = Math.abs(z);
+                let term = Math.pow(absZ / 2, n);
+                let factN = 1;
+                for (let i = 1; i <= n; i++) factN *= i;
+                term /= factN;
+                sum += term;
+                for (let k = 1; k < 75; k++) {
+                    term *= - (z / 2) * (z / 2) / (k * (n + k));
+                    sum += term;
+                    if (Math.abs(term) < 1e-15 * Math.abs(sum)) break;
+                }
+                if (z < 0 && (n % 2 !== 0)) sum = -sum;
+                return isFinite(sum) ? sum : 0;
+            }
+
+            // Polynomial recurrence integrals over [0, 1]
+            function polyCosInt(p, n) {
+                if (p === 0) return 0;
+                const omega = 2 * Math.PI * n;
+                return - (p / omega) * polySinInt(p - 1, n);
+            }
+
+            function polySinInt(p, n) {
+                const omega = 2 * Math.PI * n;
+                if (p === 0) return 0;
+                return - 1 / omega + (p / omega) * polyCosInt(p - 1, n);
+            }
+
+            function cleanExpr(expr) {
+                let s = expr.trim().toLowerCase();
+                s = s.replace(/\s+/g, '');
+                s = s.replace(/e\^\(([^)]+)\)/g, 'exp($1)');
+                s = s.replace(/e\^([a-z0-9_.*+-]+)/g, 'exp($1)');
+                s = s.replace(/\*\*/g, '^');
+                s = s.replace(/pi\*?x/g, 'pi*x');
+                s = s.replace(/2\*?pi/g, '2*pi');
+                s = s.replace(/(\d)\*?cos/g, '$1*cos');
+                s = s.replace(/(\d)\*?sin/g, '$1*sin');
+                return s;
+            }
+
+            function solve(expr) {
+                if (!expr) return null;
+                const s = cleanExpr(expr);
+
+                // 1. Modified Bessel Generating Function: exp(z*cos(2*pi*x)) or e^(z*cos(2*pi*x))
+                const mBesselCos = s.match(/^exp\(([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?cos\(2\*pi\*x\)\)$/);
+                if (mBesselCos) {
+                    let zStr = mBesselCos[1];
+                    if (zStr === '' || zStr === '+') zStr = '1';
+                    if (zStr === '-') zStr = '-1';
+                    const z = parseFloat(zStr);
+                    const a0Val = 2 * besselI(0, z);
+                    return {
+                        isClosedForm: true,
+                        type: 'bessel_i_cos',
+                        name: 'Modified Bessel Generating Function',
+                        z: z,
+                        zStr: zStr,
+                        a0Latex: `a_0 = 2 I_0(${zStr}) \\approx ${a0Val.toFixed(3)}`,
+                        anLatex: `a_n = 2 I_n(${zStr})`,
+                        bnLatex: `b_n = 0`,
+                        mainLatex: `f(x) = I_0(${zStr}) + 2\\sum_{n=1}^{N} I_n(${zStr}) \\cos(2\\pi n x)`,
+                        subLatex: `a_n = 2 I_n(${zStr}), \\quad b_n = 0, \\quad a_0 = 2 I_0(${zStr})`,
+                        exponentialSubLatex: `c_0 = I_0(${zStr}), \\quad c_n = I_{|n|}(${zStr})`,
+                        a0Value: a0Val,
+                        dcOffset: a0Val / 2,
+                        anValue: (n) => 2 * besselI(n, z),
+                        bnValue: (n) => 0,
+                        anMathAt: (n) => `a_{${n}} = 2 I_{${n}}(${zStr})`,
+                        bnMathAt: (n) => `b_{${n}} = 0`
+                    };
+                }
+
+                // 2. Modified Bessel Sine Expansion: exp(z*sin(2*pi*x))
+                const mBesselSin = s.match(/^exp\(([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?sin\(2\*pi\*x\)\)$/);
+                if (mBesselSin) {
+                    let zStr = mBesselSin[1];
+                    if (zStr === '' || zStr === '+') zStr = '1';
+                    if (zStr === '-') zStr = '-1';
+                    const z = parseFloat(zStr);
+                    const a0Val = 2 * besselI(0, z);
+                    return {
+                        isClosedForm: true,
+                        type: 'bessel_i_sin',
+                        name: 'Modified Bessel Sine Expansion',
+                        z: z,
+                        zStr: zStr,
+                        a0Latex: `a_0 = 2 I_0(${zStr}) \\approx ${a0Val.toFixed(3)}`,
+                        anLatex: `a_{2k} = 2(-1)^k I_{2k}(${zStr}), \\quad a_{2k+1} = 0`,
+                        bnLatex: `b_{2k+1} = 2(-1)^k I_{2k+1}(${zStr}), \\quad b_{2k} = 0`,
+                        mainLatex: `f(x) = I_0(${zStr}) + 2\\sum_{n=1}^{N} [a_n\\cos(2\\pi nx) + b_n\\sin(2\\pi nx)]`,
+                        subLatex: `a_{2k} = 2(-1)^k I_{2k}(${zStr}), \\quad b_{2k+1} = 2(-1)^k I_{2k+1}(${zStr})`,
+                        exponentialSubLatex: `c_0 = I_0(${zStr}), \\quad c_n = (-i)^n I_n(${zStr})`,
+                        a0Value: a0Val,
+                        dcOffset: a0Val / 2,
+                        anValue: (n) => n % 2 === 0 ? 2 * Math.pow(-1, n / 2) * besselI(n, z) : 0,
+                        bnValue: (n) => n % 2 === 1 ? 2 * Math.pow(-1, (n - 1) / 2) * besselI(n, z) : 0,
+                        anMathAt: (n) => n % 2 === 0 ? `a_{${n}} = ${Math.pow(-1, n/2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `a_{${n}} = 0`,
+                        bnMathAt: (n) => n % 2 === 1 ? `b_{${n}} = ${Math.pow(-1, (n-1)/2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `b_{${n}} = 0`
+                    };
+                }
+
+                // 3. Bessel Jacobi-Anger: cos(z*sin(2*pi*x))
+                const mCosSin = s.match(/^cos\(([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?sin\(2\*pi\*x\)\)$/);
+                if (mCosSin) {
+                    let zStr = mCosSin[1];
+                    if (zStr === '' || zStr === '+') zStr = '1';
+                    if (zStr === '-') zStr = '-1';
+                    const z = parseFloat(zStr);
+                    const a0Val = 2 * besselJ(0, z);
+                    return {
+                        isClosedForm: true,
+                        type: 'bessel_j_cos_sin',
+                        z: z,
+                        zStr: zStr,
+                        a0Latex: `a_0 = 2 J_0(${zStr}) \\approx ${a0Val.toFixed(3)}`,
+                        anLatex: `a_{2k} = 2 J_{2k}(${zStr}), \\quad a_{2k+1} = 0`,
+                        bnLatex: `b_n = 0`,
+                        mainLatex: `f(x) = J_0(${zStr}) + 2\\sum_{k=1}^{\\infty} J_{2k}(${zStr}) \\cos(4\\pi k x)`,
+                        subLatex: `a_{2k} = 2 J_{2k}(${zStr}), \\quad a_{2k+1} = 0, \\quad b_n = 0`,
+                        exponentialSubLatex: `c_0 = J_0(${zStr}), \\quad c_{2k} = J_{2k}(${zStr})`,
+                        a0Value: a0Val,
+                        dcOffset: a0Val / 2,
+                        anValue: (n) => n % 2 === 0 ? 2 * besselJ(n, z) : 0,
+                        bnValue: (n) => 0,
+                        anMathAt: (n) => n % 2 === 0 ? `a_{${n}} = 2 J_{${n}}(${zStr})` : `a_{${n}} = 0`,
+                        bnMathAt: (n) => `b_{${n}} = 0`
+                    };
+                }
+
+                // 4. Bessel Jacobi-Anger: sin(z*sin(2*pi*x))
+                const mSinSin = s.match(/^sin\(([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?sin\(2\*pi\*x\)\)$/);
+                if (mSinSin) {
+                    let zStr = mSinSin[1];
+                    if (zStr === '' || zStr === '+') zStr = '1';
+                    if (zStr === '-') zStr = '-1';
+                    const z = parseFloat(zStr);
+                    return {
+                        isClosedForm: true,
+                        type: 'bessel_j_sin_sin',
+                        z: z,
+                        zStr: zStr,
+                        a0Latex: `a_0 = 0`,
+                        anLatex: `a_n = 0`,
+                        bnLatex: `b_{2k+1} = 2 J_{2k+1}(${zStr}), \\quad b_{2k} = 0`,
+                        mainLatex: `f(x) = 2\\sum_{k=0}^{\\infty} J_{2k+1}(${zStr}) \\sin(2\\pi (2k+1) x)`,
+                        subLatex: `a_n = 0, \\quad b_{2k+1} = 2 J_{2k+1}(${zStr}), \\quad b_{2k} = 0`,
+                        exponentialSubLatex: `c_n = (-1)^{(n-1)/2} J_n(${zStr}) \\; (n \\text{ odd})`,
+                        a0Value: 0,
+                        dcOffset: 0,
+                        anValue: (n) => 0,
+                        bnValue: (n) => n % 2 === 1 ? 2 * besselJ(n, z) : 0,
+                        anMathAt: (n) => `a_{${n}} = 0`,
+                        bnMathAt: (n) => n % 2 === 1 ? `b_{${n}} = 2 J_{${n}}(${zStr})` : `b_{${n}} = 0`
+                    };
+                }
+
+                // 5. Exponential on [0, 1]: exp(k*x) or e^(k*x)
+                const mExpX = s.match(/^exp\(([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?x\)$/);
+                if (mExpX) {
+                    let kStr = mExpX[1];
+                    if (kStr === '' || kStr === '+') kStr = '1';
+                    if (kStr === '-') kStr = '-1';
+                    const k = parseFloat(kStr);
+                    const expK = Math.exp(k);
+                    const a0Val = 2 * (expK - 1) / k;
+                    return {
+                        isClosedForm: true,
+                        type: 'exp_kx',
+                        k: k,
+                        kStr: kStr,
+                        a0Latex: `a_0 = \\frac{2(e^{${kStr}} - 1)}{${kStr}} \\approx ${a0Val.toFixed(3)}`,
+                        anLatex: `a_n = \\frac{2(${kStr})(e^{${kStr}} - 1)}{${kStr}^2 + 4\\pi^2 n^2}`,
+                        bnLatex: `b_n = -\\frac{4\\pi n(e^{${kStr}} - 1)}{${kStr}^2 + 4\\pi^2 n^2}`,
+                        mainLatex: `f(x) = \\frac{e^{${kStr}} - 1}{${kStr}} + \\sum_{n=1}^{N} [a_n \\cos(2\\pi n x) + b_n \\sin(2\\pi n x)]`,
+                        subLatex: `a_n = \\frac{2(${kStr})(e^{${kStr}} - 1)}{${kStr}^2 + 4\\pi^2 n^2}, \\quad b_n = -\\frac{4\\pi n(e^{${kStr}} - 1)}{${kStr}^2 + 4\\pi^2 n^2}`,
+                        exponentialSubLatex: `c_n = \\frac{e^{${kStr}} - 1}{${kStr} - 2\\pi i n}`,
+                        a0Value: a0Val,
+                        dcOffset: a0Val / 2,
+                        anValue: (n) => 2 * k * (expK - 1) / (k * k + 4 * Math.PI * Math.PI * n * n),
+                        bnValue: (n) => - 4 * Math.PI * n * (expK - 1) / (k * k + 4 * Math.PI * Math.PI * n * n),
+                        anMathAt: (n) => `a_{${n}} = \\frac{${(2 * k * (expK - 1)).toFixed(2)}}{${(k * k).toFixed(1)} + 4\\pi^2 (${n})^2}`,
+                        bnMathAt: (n) => `b_{${n}} = -\\frac{${(4 * (expK - 1)).toFixed(2)}\\pi (${n})}{${(k * k).toFixed(1)} + 4\\pi^2 (${n})^2}`
+                    };
+                }
+
+                // 6. Polynomials on [0, 1]: x, x^2, x^3, x^4
+                const mPoly = s.match(/^x(?:\^(\d+))?$/);
+                if (mPoly) {
+                    const p = mPoly[1] ? parseInt(mPoly[1]) : 1;
+                    const a0Val = 2 / (p + 1);
+                    let anLatex = '', bnLatex = '', subLatex = '';
+                    if (p === 1) {
+                        anLatex = 'a_n = 0';
+                        bnLatex = 'b_n = -\\frac{1}{\\pi n}';
+                        subLatex = 'a_n = 0, \\quad b_n = -\\frac{1}{\\pi n}, \\quad a_0 = 1';
+                    } else if (p === 2) {
+                        anLatex = 'a_n = \\frac{1}{\\pi^2 n^2}';
+                        bnLatex = 'b_n = -\\frac{1}{\\pi n}';
+                        subLatex = 'a_n = \\frac{1}{\\pi^2 n^2}, \\quad b_n = -\\frac{1}{\\pi n}, \\quad a_0 = \\frac{2}{3}';
+                    } else if (p === 3) {
+                        anLatex = 'a_n = \\frac{3}{2\\pi^2 n^2}';
+                        bnLatex = 'b_n = -\\frac{1}{\\pi n} + \\frac{3}{2\\pi^3 n^3}';
+                        subLatex = 'a_n = \\frac{3}{2\\pi^2 n^2}, \\quad b_n = -\\frac{1}{\\pi n} + \\frac{3}{2\\pi^3 n^3}';
+                    } else {
+                        anLatex = `a_n = 2\\int_0^1 x^{${p}} \\cos(2\\pi n x)\\,dx`;
+                        bnLatex = `b_n = 2\\int_0^1 x^{${p}} \\sin(2\\pi n x)\\,dx`;
+                        subLatex = `a_0 = \\frac{2}{${p + 1}}, \\quad \\text{Degree } ${p}`;
+                    }
+
+                    return {
+                        isClosedForm: true,
+                        type: 'polynomial',
+                        power: p,
+                        a0Latex: `a_0 = \\frac{2}{${p + 1}} \\approx ${(2 / (p + 1)).toFixed(3)}`,
+                        anLatex: anLatex,
+                        bnLatex: bnLatex,
+                        mainLatex: `f(x) = \\frac{1}{${p + 1}} + \\sum_{n=1}^{N} [a_n \\cos(2\\pi n x) + b_n \\sin(2\\pi n x)]`,
+                        subLatex: subLatex,
+                        exponentialSubLatex: `c_n = \\frac{a_n - i b_n}{2}, \\quad c_0 = \\frac{1}{${p + 1}}`,
+                        a0Value: a0Val,
+                        dcOffset: a0Val / 2,
+                        anValue: (n) => 2 * polyCosInt(p, n),
+                        bnValue: (n) => 2 * polySinInt(p, n),
+                        anMathAt: (n) => {
+                            if (p === 1) return `a_{${n}} = 0`;
+                            if (p === 2) return `a_{${n}} = \\frac{1}{${n * n}\\pi^2}`;
+                            if (p === 3) return `a_{${n}} = \\frac{3}{2(${n * n})\\pi^2}`;
+                            return `a_{${n}} = ${(2 * polyCosInt(p, n)).toFixed(3)}`;
+                        },
+                        bnMathAt: (n) => {
+                            if (p === 1 || p === 2) return `b_{${n}} = -\\frac{1}{${n}\\pi}`;
+                            return `b_{${n}} = ${(2 * polySinInt(p, n)).toFixed(3)}`;
+                        }
+                    };
+                }
+
+                // 7. Single pure harmonic: A*cos(2*pi*k*x) or A*sin(2*pi*k*x)
+                const mPureCos = s.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?cos\(2\*pi(?:\*(\d+))?\*x\)$/);
+                if (mPureCos) {
+                    let aStr = mPureCos[1];
+                    if (aStr === '' || aStr === '+') aStr = '1';
+                    if (aStr === '-') aStr = '-1';
+                    const A = parseFloat(aStr);
+                    const k = mPureCos[2] ? parseInt(mPureCos[2]) : 1;
+                    return {
+                        isClosedForm: true,
+                        type: 'pure_cos',
+                        a0Latex: 'a_0 = 0',
+                        anLatex: `a_n = \\begin{cases} ${aStr}, & n = ${k} \\\\ 0, & n \\ne ${k} \\end{cases}`,
+                        bnLatex: 'b_n = 0',
+                        mainLatex: `f(x) = ${aStr === '1' ? '' : aStr === '-1' ? '-' : aStr}\\cos(2\\pi \\cdot ${k}x)`,
+                        subLatex: `a_{${k}} = ${aStr}, \\quad a_{n \\ne ${k}} = 0, \\quad b_n = 0`,
+                        exponentialSubLatex: `c_{${k}} = c_{-${k}} = ${A / 2}`,
+                        a0Value: 0,
+                        dcOffset: 0,
+                        anValue: (n) => n === k ? A : 0,
+                        bnValue: (n) => 0,
+                        anMathAt: (n) => n === k ? `a_{${n}} = ${aStr}` : `a_{${n}} = 0`,
+                        bnMathAt: (n) => `b_{${n}} = 0`
+                    };
+                }
+
+                const mPureSin = s.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?sin\(2\*pi(?:\*(\d+))?\*x\)$/);
+                if (mPureSin) {
+                    let bStr = mPureSin[1];
+                    if (bStr === '' || bStr === '+') bStr = '1';
+                    if (bStr === '-') bStr = '-1';
+                    const B = parseFloat(bStr);
+                    const k = mPureSin[2] ? parseInt(mPureSin[2]) : 1;
+                    return {
+                        isClosedForm: true,
+                        type: 'pure_sin',
+                        a0Latex: 'a_0 = 0',
+                        anLatex: 'a_n = 0',
+                        bnLatex: `b_n = \\begin{cases} ${bStr}, & n = ${k} \\\\ 0, & n \\ne ${k} \\end{cases}`,
+                        mainLatex: `f(x) = ${bStr === '1' ? '' : bStr === '-1' ? '-' : bStr}\\sin(2\\pi \\cdot ${k}x)`,
+                        subLatex: `a_n = 0, \\quad b_{${k}} = ${bStr}, \\quad b_{n \\ne ${k}} = 0`,
+                        exponentialSubLatex: `c_{${k}} = -${B / 2}i, \\quad c_{-${k}} = ${B / 2}i`,
+                        a0Value: 0,
+                        dcOffset: 0,
+                        anValue: (n) => 0,
+                        bnValue: (n) => n === k ? B : 0,
+                        anMathAt: (n) => `a_{${n}} = 0`,
+                        bnMathAt: (n) => n === k ? `b_{${n}} = ${bStr}` : `b_{${n}} = 0`
+                    };
+                }
+
+                // 8. Linear Polynomial on [0, 1]: m*x + c (e.g. 3*x - 1, 2*x, x - 0.5)
+                const mLinear = s.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+)?)\*?x([+-](?:\d+(?:\.\d+)?|\.\d+))?$/);
+                if (mLinear) {
+                    let mStr = mLinear[1];
+                    if (mStr === '' || mStr === '+') mStr = '1';
+                    if (mStr === '-') mStr = '-1';
+                    const m = parseFloat(mStr);
+                    const cStr = mLinear[2] || '0';
+                    const c = parseFloat(cStr);
+                    // a0 = 2 * int_0^1 (m*x + c) dx = 2*(m/2 + c) = m + 2c
+                    const a0Val = m + 2 * c;
+                    const dc = a0Val / 2;
+                    const mDisplay = m === 1 ? '' : m === -1 ? '-' : `${m}`;
+                    return {
+                        isClosedForm: true,
+                        type: 'linear',
+                        a0Latex: `a_0 = ${a0Val.toFixed(3)}`,
+                        anLatex: 'a_n = 0',
+                        bnLatex: `b_n = -\\frac{${mDisplay}}{\\pi n}`,
+                        mainLatex: `f(x) = ${dc.toFixed(2)} - \\frac{${mDisplay}}{\\pi}\\sum_{n=1}^{N} \\frac{\\sin(2\\pi n x)}{n}`,
+                        subLatex: `a_n = 0, \\quad b_n = -\\frac{${mDisplay}}{n\\pi}, \\quad a_0 = ${a0Val.toFixed(3)}`,
+                        exponentialSubLatex: `c_0 = ${dc.toFixed(2)}, \\quad c_n = \\frac{i ${mDisplay}}{2\\pi n}`,
+                        a0Value: a0Val,
+                        dcOffset: dc,
+                        anValue: (n) => 0,
+                        bnValue: (n) => - m / (Math.PI * n),
+                        anMathAt: (n) => `a_{${n}} = 0`,
+                        bnMathAt: (n) => `b_{${n}} = -\\frac{${mDisplay}}{${n}\\pi}`
+                    };
+                }
+
+                return null;
+            }
+
+            return { solve, besselI, besselJ };
+        })();
+
         // Calculate Fourier Decomposition
         function computeFourierSeries() {
-            harmonics = [];
-            halfSineHarmonics = [];
-            halfCosineHarmonics = [];
-            dcOffset = 0;
+            // Build new harmonics into a local array, then swap immediately into
+            // harmonics/dcOffset so UI functions see fresh data right away.
+            // The wave buffer is flushed at the next frame boundary to prevent
+            // a frame where new epicycles draw against old wave Y-values.
+            const newHarmonics = [];
+            let newDcOffset = 0;
+            coefficientSamples = null;
 
             if (currentWaveform === 'square') {
-                for (let i = 0; i < 100; i++) {
-                    const n = i * 2 + 1;
-                    const bn = 4 / (n * Math.PI);
-                    harmonics.push({
+                for (let n = 1; n <= MAX_HARMONICS; n++) {
+                    const bn = n % 2 === 0 ? 0 : 4 / (n * Math.PI);
+                    newHarmonics.push({
                         n: n,
                         an: 0,
                         bn: bn,
                         cn: bn,
                         theta: 0,
                         anMath: `a_{${n}} = 0`,
-                        bnMath: `b_{${n}} = \\frac{4}{${n}\\pi}`,
+                        bnMath: n % 2 === 0 ? `b_{${n}} = 0` : `b_{${n}} = \\frac{4}{${n}\\pi}`,
                         baseRadius: 70 * bn
                     });
                 }
             } else if (currentWaveform === 'sawtooth') {
-                for (let n = 1; n <= 100; n++) {
+                for (let n = 1; n <= MAX_HARMONICS; n++) {
                     const bn = (n % 2 === 0 ? -1 : 1) * (2 / (n * Math.PI));
-                    harmonics.push({
+                    newHarmonics.push({
                         n: n,
                         an: 0,
                         bn: bn,
@@ -1052,24 +1600,21 @@
                     });
                 }
             } else if (currentWaveform === 'triangle') {
-                // Canonical Triangle Wave: f(x) = 1 - 4|x - 0.5| (Fourier Cosine Series)
-                // a_n = -8 / (pi * n)^2 for odd n; b_n = 0
-                for (let i = 0; i < 100; i++) {
-                    const n = i * 2 + 1;
-                    const an = -8 / (Math.PI * Math.PI * n * n);
-                    harmonics.push({
+                for (let n = 1; n <= MAX_HARMONICS; n++) {
+                    const an = n % 2 === 0 ? 0 : -8 / (Math.PI * Math.PI * n * n);
+                    newHarmonics.push({
                         n: n,
                         an: an,
                         bn: 0,
                         cn: Math.abs(an),
                         theta: -Math.PI / 2,
-                        anMath: `a_{${n}} = -\\frac{8}{(${n}\\pi)^2}`,
+                        anMath: n % 2 === 0 ? `a_{${n}} = 0` : `a_{${n}} = -\\frac{8}{(${n}\\pi)^2}`,
                         bnMath: `b_{${n}} = 0`,
                         baseRadius: 70 * (Math.abs(an) * (Math.PI * Math.PI / 8))
                     });
                 }
             } else if (currentWaveform === 'sine') {
-                harmonics.push({
+                newHarmonics.push({
                     n: 1,
                     an: 0,
                     bn: 1,
@@ -1079,14 +1624,14 @@
                     bnMath: `b_1 = 1`,
                     baseRadius: 70
                 });
-                for (let n = 2; n <= 100; n++) {
-                    harmonics.push({ n, an: 0, bn: 0, cn: 0, theta: 0, anMath: `a_{${n}} = 0`, bnMath: `b_{${n}} = 0`, baseRadius: 0 });
+                for (let n = 2; n <= MAX_HARMONICS; n++) {
+                    newHarmonics.push({ n, an: 0, bn: 0, cn: 0, theta: 0, anMath: `a_{${n}} = 0`, bnMath: `b_{${n}} = 0`, baseRadius: 0 });
                 }
             } else if (currentWaveform === 'pulse') {
-                dcOffset = 2 * dutyCycle - 1;
-                for (let n = 1; n <= 100; n++) {
+                newDcOffset = 2 * dutyCycle - 1;
+                for (let n = 1; n <= MAX_HARMONICS; n++) {
                     const an = (4 / (n * Math.PI)) * Math.sin(n * Math.PI * dutyCycle);
-                    harmonics.push({
+                    newHarmonics.push({
                         n: n,
                         an: an,
                         bn: 0,
@@ -1097,39 +1642,83 @@
                         baseRadius: 70 * Math.abs(an)
                     });
                 }
-            } else {
-                // Numerical integration for Custom or Drawn
-                const SAMPLES = 1024;
-                const dx = 1 / SAMPLES;
-                let sumDC = 0;
-                const MAX_H = 100;
-                const rawAn = new Array(MAX_H + 1).fill(0);
-                const rawBn = new Array(MAX_H + 1).fill(0);
+            } else if (currentWaveform === 'custom') {
+                const sol = FourierCAS.solve(customExpr);
+                currentCustomSolution = sol;
 
-                for (let i = 0; i < SAMPLES; i++) {
-                    const x = i * dx;
-                    let y = 0;
-                    if (currentWaveform === 'custom') {
-                        y = evalCustomEquation(x);
-                    } else if (currentWaveform === 'drawn' && hasDrawn) {
-                        const idx = Math.floor(x * (DRAW_RES - 1));
-                        y = drawnPoints[idx] || 0;
+                if (sol && sol.isClosedForm) {
+                    newDcOffset = sol.dcOffset;
+                    for (let n = 1; n <= MAX_HARMONICS; n++) {
+                        const an = sol.anValue(n);
+                        const bn = sol.bnValue(n);
+                        const cn = Math.sqrt(an * an + bn * bn);
+                        const theta = Math.atan2(an, bn);
+                        newHarmonics.push({
+                            n: n,
+                            an: an,
+                            bn: bn,
+                            cn: cn,
+                            theta: theta,
+                            anMath: sol.anMathAt(n),
+                            bnMath: sol.bnMathAt(n),
+                            baseRadius: 70 * cn
+                        });
                     }
-                    sumDC += y * dx;
-                    for (let n = 1; n <= MAX_H; n++) {
-                        const angle = 2 * Math.PI * n * x;
-                        rawAn[n] += 2 * y * Math.cos(angle) * dx;
-                        rawBn[n] += 2 * y * Math.sin(angle) * dx;
+                } else {
+                    // Numerical integration directly from function (no smoothing distortion)
+                    const N_INT = 1024;
+                    const dx = 1 / N_INT;
+                    let dc = 0;
+                    const samples = new Float64Array(N_INT);
+                    for (let i = 0; i < N_INT; i++) {
+                        const x = (i + 0.5) * dx;
+                        const y = evalCustomEquation(x);
+                        samples[i] = y;
+                        dc += y * dx;
+                    }
+                    newDcOffset = dc;
+                    coefficientSamples = samples;
+
+                    for (let n = 1; n <= MAX_HARMONICS; n++) {
+                        let anSum = 0;
+                        let bnSum = 0;
+                        for (let i = 0; i < N_INT; i++) {
+                            const x = (i + 0.5) * dx;
+                            anSum += 2 * samples[i] * Math.cos(2 * Math.PI * n * x) * dx;
+                            bnSum += 2 * samples[i] * Math.sin(2 * Math.PI * n * x) * dx;
+                        }
+                        const an = Math.abs(anSum) < 1e-4 ? 0 : anSum;
+                        const bn = Math.abs(bnSum) < 1e-4 ? 0 : bnSum;
+                        const cn = Math.sqrt(an * an + bn * bn);
+                        const theta = Math.atan2(an, bn);
+                        newHarmonics.push({
+                            n: n,
+                            an: an,
+                            bn: bn,
+                            cn: cn,
+                            theta: theta,
+                            anMath: `a_{${n}} = ${an.toFixed(3)}`,
+                            bnMath: `b_{${n}} = ${bn.toFixed(3)}`,
+                            baseRadius: 70 * cn
+                        });
                     }
                 }
-                dcOffset = sumDC;
+            } else {
+                // Drawn waveform: smoothed 1024 points
+                currentCustomSolution = null;
+                coefficientSamples = getSmoothedCoefficientSamples();
+                const spectrum = fftRealSamples(coefficientSamples);
+                newDcOffset = spectrum.real[0] / DRAW_RES;
 
-                for (let n = 1; n <= MAX_H; n++) {
-                    const an = Math.abs(rawAn[n]) < 1e-4 ? 0 : rawAn[n];
-                    const bn = Math.abs(rawBn[n]) < 1e-4 ? 0 : rawBn[n];
+                for (let n = 1; n <= MAX_HARMONICS; n++) {
+                    const isNyquist = n === MAX_HARMONICS;
+                    const anValue = (isNyquist ? 1 : 2) * spectrum.real[n] / DRAW_RES;
+                    const bnValue = isNyquist ? 0 : -2 * spectrum.imaginary[n] / DRAW_RES;
+                    const an = Math.abs(anValue) < 1e-4 ? 0 : anValue;
+                    const bn = Math.abs(bnValue) < 1e-4 ? 0 : bnValue;
                     const cn = Math.sqrt(an * an + bn * bn);
                     const theta = Math.atan2(an, bn);
-                    harmonics.push({
+                    newHarmonics.push({
                         n: n,
                         an: an,
                         bn: bn,
@@ -1142,22 +1731,27 @@
                 }
             }
 
-            // Compute Half-range Sine and Cosine series
-            const SAMPLES = 1024;
-            const dx = 1 / SAMPLES;
-            for (let n = 1; n <= 100; n++) {
+            // Apply new harmonics immediately so UI (coefficients list etc.) sees correct values
+            harmonics = newHarmonics;
+            dcOffset = newDcOffset;
+            // Signal animate() to flush wave at the very next frame boundary
+            harmonicsSwapNeeded = true;
+
+            // Compute Half-range Sine and Cosine series (UI only, safe to run immediately)
+            computeHalfRangeSeries(numTerms);
+        }
+
+        function computeHalfRangeSeries(maxTerms) {
+            halfSineHarmonics = [];
+            halfCosineHarmonics = [];
+            const samples = DRAW_RES;
+            const dx = 1 / samples;
+            for (let n = 1; n <= Math.min(maxTerms, MAX_HARMONICS); n++) {
                 let sSum = 0;
                 let cSum = 0;
-                for (let i = 0; i < SAMPLES; i++) {
+                for (let i = 0; i < samples; i++) {
                     const x = i * dx;
-                    let y = 0;
-                    if (currentWaveform === 'square') y = x < 0.5 ? 1 : -1;
-                    else if (currentWaveform === 'triangle') y = 1 - 4 * Math.abs(x - 0.5);
-                    else if (currentWaveform === 'sawtooth') y = 2 * x - 1;
-                    else if (currentWaveform === 'sine') y = Math.sin(2 * Math.PI * x);
-                    else if (currentWaveform === 'pulse') y = x < dutyCycle ? 1 : -1;
-                    else if (currentWaveform === 'custom') y = evalCustomEquation(x);
-                    else if (currentWaveform === 'drawn' && hasDrawn) y = drawnPoints[Math.floor(x * (DRAW_RES - 1))] || 0;
+                    const y = coefficientSamples ? coefficientSamples[i] : evaluatePresetWaveform(x);
 
                     sSum += 2 * y * Math.sin(Math.PI * n * x) * dx;
                     cSum += 2 * y * Math.cos(Math.PI * n * x) * dx;
@@ -1169,30 +1763,123 @@
             }
         }
 
+        function evaluatePresetWaveform(x) {
+            if (currentWaveform === 'square') return x < 0.5 ? 1 : -1;
+            if (currentWaveform === 'triangle') return 1 - 4 * Math.abs(x - 0.5);
+            if (currentWaveform === 'sawtooth') return 2 * x - 1;
+            if (currentWaveform === 'sine') return Math.sin(2 * Math.PI * x);
+            if (currentWaveform === 'pulse') return x < dutyCycle ? 1 : -1;
+            return 0;
+        }
+
+        function fftRealSamples(samples) {
+            const size = samples.length;
+            const real = new Float64Array(samples);
+            const imaginary = new Float64Array(size);
+
+            for (let i = 1, reversed = 0; i < size; i++) {
+                let bit = size >> 1;
+                while (reversed & bit) {
+                    reversed ^= bit;
+                    bit >>= 1;
+                }
+                reversed ^= bit;
+                if (i < reversed) {
+                    [real[i], real[reversed]] = [real[reversed], real[i]];
+                }
+            }
+
+            for (let blockSize = 2; blockSize <= size; blockSize <<= 1) {
+                const halfBlock = blockSize >> 1;
+                const angleStep = -2 * Math.PI / blockSize;
+                for (let blockStart = 0; blockStart < size; blockStart += blockSize) {
+                    for (let offset = 0; offset < halfBlock; offset++) {
+                        const angle = angleStep * offset;
+                        const cosine = Math.cos(angle);
+                        const sine = Math.sin(angle);
+                        const even = blockStart + offset;
+                        const odd = even + halfBlock;
+                        const productReal = cosine * real[odd] - sine * imaginary[odd];
+                        const productImaginary = cosine * imaginary[odd] + sine * real[odd];
+                        real[odd] = real[even] - productReal;
+                        imaginary[odd] = imaginary[even] - productImaginary;
+                        real[even] += productReal;
+                        imaginary[even] += productImaginary;
+                    }
+                }
+            }
+
+            return { real, imaginary };
+        }
+
+        function getSmoothedCoefficientSamples() {
+            const samples = new Float64Array(DRAW_RES);
+            const smoothed = new Float64Array(DRAW_RES);
+            for (let i = 0; i < DRAW_RES; i++) {
+                const x = i / DRAW_RES;
+                samples[i] = currentWaveform === 'custom'
+                    ? evalCustomEquation(x)
+                    : hasDrawn ? drawnPoints[i] : 0;
+            }
+            for (let i = 0; i < DRAW_RES; i++) {
+                const previous = samples[(i + DRAW_RES - 1) % DRAW_RES];
+                const next = samples[(i + 1) % DRAW_RES];
+                smoothed[i] = 0.05 * previous + 0.9 * samples[i] + 0.05 * next;
+            }
+            return smoothed;
+        }
+
+        function integrateSimpson(fn, lower = 0, upper = 1, intervals = DRAW_RES) {
+            const count = intervals % 2 === 0 ? intervals : intervals + 1;
+            const step = (upper - lower) / count;
+            let total = fn(lower) + fn(upper);
+
+            for (let i = 1; i < count; i++) {
+                total += (i % 2 === 0 ? 2 : 4) * fn(lower + i * step);
+            }
+
+            return total * step / 3;
+        }
+
+        function samplePeriodic(samples, x) {
+            const position = (((x % 1) + 1) % 1) * DRAW_RES;
+            const left = Math.floor(position);
+            const fraction = position - left;
+            const right = (left + 1) % DRAW_RES;
+            return samples[left] + (samples[right] - samples[left]) * fraction;
+        }
+
         function evalCustomEquation(x) {
+            if (compiledCustomExprText !== customExpr) {
+                compiledCustomExprText = customExpr;
+                try {
+                    const expr = customExpr.toLowerCase()
+                        .replace(/\^/g, '**')
+                        .replace(/\bpi\b/g, 'Math.PI')
+                        .replace(/\be\b/g, 'Math.E')
+                        .replace(/\bsin\b/g, 'Math.sin')
+                        .replace(/\bcos\b/g, 'Math.cos')
+                        .replace(/\btan\b/g, 'Math.tan')
+                        .replace(/\basin\b/g, 'Math.asin')
+                        .replace(/\bacos\b/g, 'Math.acos')
+                        .replace(/\batan\b/g, 'Math.atan')
+                        .replace(/\bexp\b/g, 'Math.exp')
+                        .replace(/\bsqrt\b/g, 'Math.sqrt')
+                        .replace(/\babs\b/g, 'Math.abs')
+                        .replace(/\blog\b/g, 'Math.log10')
+                        .replace(/\bln\b/g, 'Math.log')
+                        .replace(/\bfloor\b/g, 'Math.floor')
+                        .replace(/\bceil\b/g, 'Math.ceil')
+                        .replace(/\bsign\b/g, 'Math.sign')
+                        .replace(/\bmin\b/g, 'Math.min')
+                        .replace(/\bmax\b/g, 'Math.max');
+                    compiledCustomFunction = new Function('x', `return (${expr});`);
+                } catch (e) {
+                    compiledCustomFunction = null;
+                }
+            }
             try {
-                let expr = customExpr.toLowerCase()
-                    .replace(/\^/g, '**')
-                    .replace(/\bpi\b/g, 'Math.PI')
-                    .replace(/\be\b/g, 'Math.E')
-                    .replace(/\bsin\b/g, 'Math.sin')
-                    .replace(/\bcos\b/g, 'Math.cos')
-                    .replace(/\btan\b/g, 'Math.tan')
-                    .replace(/\basin\b/g, 'Math.asin')
-                    .replace(/\bacos\b/g, 'Math.acos')
-                    .replace(/\batan\b/g, 'Math.atan')
-                    .replace(/\bexp\b/g, 'Math.exp')
-                    .replace(/\bsqrt\b/g, 'Math.sqrt')
-                    .replace(/\babs\b/g, 'Math.abs')
-                    .replace(/\blog\b/g, 'Math.log10')
-                    .replace(/\bln\b/g, 'Math.log')
-                    .replace(/\bfloor\b/g, 'Math.floor')
-                    .replace(/\bceil\b/g, 'Math.ceil')
-                    .replace(/\bsign\b/g, 'Math.sign')
-                    .replace(/\bmin\b/g, 'Math.min')
-                    .replace(/\bmax\b/g, 'Math.max');
-                const fn = new Function('x', `return (${expr});`);
-                const val = fn(x);
+                const val = compiledCustomFunction ? compiledCustomFunction(x) : 0;
                 return isFinite(val) ? val : 0;
             } catch (e) { return 0; }
         }
@@ -1200,10 +1887,29 @@
         // Epicycles & Wave Rendering
         function calculateFourierSeries() {
             let x = 0;
-            let y = 0;
+            const baseDcY = -dcOffset * 70 * scale;
+            let y = baseDcY * (1 - morphConcentric);
+
+            // DC offset reference stem from 0-axis to epicycle origin
+            if (Math.abs(dcOffset) > 0.001) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, y);
+                ctx.strokeStyle = 'rgba(254, 180, 123, 0.45)';
+                ctx.setLineDash([3, 3]);
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fill();
+                ctx.restore();
+            }
 
             const activeHarmonics = harmonics.slice(0, numTerms);
             const count = activeHarmonics.length;
+            if (count === 0) return;
 
             for (let i = 0; i < count; i++) {
                 const h = activeHarmonics[i];
@@ -1245,7 +1951,7 @@
                 ctx.fill();
             }
 
-            const finalY = y - dcOffset * 70 * scale;
+            const finalY = y;
 
             wave.unshift(finalY);
             if (wave.length > maxWavePoints) {
@@ -1253,25 +1959,35 @@
             }
 
             const waveStartX = Math.max(260, canvas.width * 0.42);
-            ctx.beginPath();
-            ctx.moveTo(waveStartX, wave[0]);
 
-            for (let i = 1; i < wave.length; i++) {
-                const px = waveStartX + i;
-                if (px > canvas.width - 10) break;
-                ctx.lineTo(px, wave[i]);
+            // Only draw the wave path if we have at least 2 points to avoid NaN artefacts
+            if (wave.length > 1) {
+                ctx.beginPath();
+                ctx.moveTo(waveStartX, wave[0]);
+
+                for (let i = 1; i < wave.length; i++) {
+                    const px = waveStartX + i;
+                    if (px > canvas.width - 10) break;
+                    const wy = wave[i];
+                    // Skip any NaN/Infinity values left over from a previous function
+                    if (!isFinite(wy)) break;
+                    ctx.lineTo(px, wy);
+                }
+
+                ctx.strokeStyle = '#ff7e5f';
+                ctx.lineWidth = 2;
+                ctx.stroke();
             }
 
-            ctx.strokeStyle = '#ff7e5f';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            // The dot always tracks the live epicycle tip — safe even on first frame
+            const dotY = wave.length > 0 ? wave[0] : finalY;
 
             // Connecting line with smooth fade-out during concentric mode
             const lineAlpha = (1 - morphConcentric) * 0.5;
             if (lineAlpha > 0.01) {
                 ctx.beginPath();
-                ctx.moveTo(x, finalY);
-                ctx.lineTo(waveStartX, wave[0]);
+                ctx.moveTo(x, y);
+                ctx.lineTo(waveStartX, dotY);
                 ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
                 ctx.lineWidth = 1;
                 ctx.stroke();
@@ -1279,7 +1995,7 @@
 
             // Connecting dot
             ctx.beginPath();
-            ctx.arc(waveStartX, wave[0], 5, 0, Math.PI * 2);
+            ctx.arc(waveStartX, dotY, 5, 0, Math.PI * 2);
             ctx.fillStyle = '#feb47b';
             ctx.fill();
 
@@ -1290,6 +2006,14 @@
 
         // Animation Loop
         function animate() {
+            // Flush the wave buffer at the frame boundary when harmonics have just changed.
+            // This ensures wave.length = 0 happens in the SAME frame as the first draw with
+            // new harmonics, so no frame renders new epicycles against stale wave Y-values.
+            if (harmonicsSwapNeeded) {
+                harmonicsSwapNeeded = false;
+                wave.length = 0; // flush wave here, atomically with first frame of new harmonics
+            }
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const targetMorph = isConcentric ? 1 : 0;
@@ -1317,8 +2041,10 @@
         termsSlider.addEventListener('input', () => {
             numTerms = parseInt(termsSlider.value);
             termsValue.textContent = numTerms;
-            wave.length = 0;
+            harmonicsSwapNeeded = true; // flush wave at next frame boundary
+            computeHalfRangeSeries(numTerms);
             updateCoefficientsList();
+            updateTabFormulas();
             updateBottomPanels();
         });
 
@@ -1330,7 +2056,7 @@
         scaleSlider.addEventListener('input', () => {
             scale = parseFloat(scaleSlider.value);
             scaleValue.textContent = scale.toFixed(2) + ' x';
-            wave.length = 0;
+            harmonicsSwapNeeded = true; // flush wave at next frame boundary
         });
 
         animateToggle.addEventListener('change', (e) => {
@@ -1375,7 +2101,7 @@
                     dutyBox.classList.remove('visible');
                 }
 
-                wave.length = 0;
+                // wave.length = 0 handled atomically at next frame boundary after computeFourierSeries
                 computeFourierSeries();
                 updateCoefficientsList();
                 updateTabFormulas();
@@ -1398,7 +2124,6 @@
             presetEquations['pulse'] = `x < ${dutyCycle} ? 1 : -1`;
             customExprInput.value = presetEquations['pulse'];
             customExpr = customExprInput.value;
-            wave.length = 0;
             computeFourierSeries();
             updateCoefficientsList();
             updateTabFormulas();
@@ -1440,9 +2165,14 @@
                 } else if (currentWaveform === 'sine') {
                     mainLatex = 'f(x) = \\sin(2\\pi x)';
                     subLatex = 'a_n = 0, \\quad b_1 = 1, \\quad b_{n > 1} = 0';
+                } else if (currentWaveform === 'custom' && currentCustomSolution && currentCustomSolution.isClosedForm) {
+                    mainLatex = currentCustomSolution.mainLatex;
+                    subLatex = currentCustomSolution.subLatex;
                 } else {
                     mainLatex = 'f(x) \\approx \\frac{a_0}{2} + \\sum_{n=1}^{N} [a_n \\cos(2\\pi n x) + b_n \\sin(2\\pi n x)]';
-                    subLatex = 'a_n = 2\\int_0^1 f(x)\\cos(2\\pi nx)\\,dx, \\quad b_n = 2\\int_0^1 f(x)\\sin(2\\pi nx)\\,dx';
+                    subLatex = isNumericalWaveform()
+                        ? buildEvaluatedPiecewiseCoefficients('fourier')
+                        : 'a_n = 2\\int_0^1 f(x)\\cos(2\\pi nx)\\,dx, \\quad b_n = 2\\int_0^1 f(x)\\sin(2\\pi nx)\\,dx';
                 }
             } else if (activeTab === 'exponential') {
                 if (currentWaveform === 'square') {
@@ -1454,30 +2184,159 @@
                 } else if (currentWaveform === 'triangle') {
                     mainLatex = 'f(x) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i 2\\pi n x}';
                     subLatex = 'c_n = -\\frac{4}{(n\\pi)^2} \\; (n \\text{ odd}), \\quad c_n = 0 \\; (n \\text{ even})';
+                } else if (currentWaveform === 'custom' && currentCustomSolution && currentCustomSolution.isClosedForm) {
+                    mainLatex = currentCustomSolution.mainLatex;
+                    subLatex = currentCustomSolution.exponentialSubLatex || currentCustomSolution.subLatex;
                 } else {
                     mainLatex = 'f(x) \\approx \\sum_{n=-N}^{N} c_n e^{i 2\\pi n x}, \\quad c_n = \\int_0^1 f(x)e^{-i 2\\pi nx}\\,dx';
-                    subLatex = 'c_n = \\frac{a_n - i b_n}{2}, \\quad c_{-n} = c_n^* = \\frac{a_n + i b_n}{2}';
+                    subLatex = isNumericalWaveform()
+                        ? buildEvaluatedPiecewiseCoefficients('exponential')
+                        : 'c_n = \\frac{a_n - i b_n}{2}, \\quad c_{-n} = c_n^* = \\frac{a_n + i b_n}{2}';
                 }
             } else if (activeTab === 'half-sine') {
                 mainLatex = 'f(x) \\approx \\sum_{n=1}^{N} b_n \\sin(\\pi n x) \\quad (x \\in [0, 1])';
-                subLatex = 'b_n = 2\\int_0^1 f(x)\\sin(\\pi n x)\\,dx \\quad (\\text{Odd Extension})';
+                subLatex = isNumericalWaveform()
+                    ? buildEvaluatedPiecewiseCoefficients('half-sine')
+                    : 'b_n = 2\\int_0^1 f(x)\\sin(\\pi n x)\\,dx \\quad (\\text{Odd Extension})';
             } else if (activeTab === 'half-cosine') {
                 mainLatex = 'f(x) \\approx \\frac{a_0}{2} + \\sum_{n=1}^{N} a_n \\cos(\\pi n x) \\quad (x \\in [0, 1])';
-                subLatex = 'a_n = 2\\int_0^1 f(x)\\cos(\\pi n x)\\,dx \\quad (\\text{Even Extension})';
+                subLatex = isNumericalWaveform()
+                    ? buildEvaluatedPiecewiseCoefficients('half-cosine')
+                    : 'a_n = 2\\int_0^1 f(x)\\cos(\\pi n x)\\,dx \\quad (\\text{Even Extension})';
             }
 
             renderMathFormula(mainF, mainLatex, 'f(x) evaluated series');
-            renderMathFormula(subF, subLatex, 'evaluated coefficients');
+            const showEvaluatedPiecewise = isNumericalWaveform();
+            renderMathFormula(subF, subLatex, 'evaluated coefficients', showEvaluatedPiecewise);
         }
 
-        function renderMathFormula(elem, latex, fallback) {
+        function isNumericalWaveform() {
+            return currentWaveform === 'drawn' || (currentWaveform === 'custom' && (!currentCustomSolution || !currentCustomSolution.isClosedForm));
+        }
+
+        function buildEvaluatedPiecewiseCoefficients(tab) {
+            const active = harmonics.slice(0, numTerms);
+            const asCases = entries => {
+                const visible = entries.filter(entry => entry.value !== 0);
+                const cases = visible.map(entry => `${entry.value}, & n = ${entry.n}`);
+                cases.push('0, & \\text{otherwise}');
+                return `\\begin{cases}${cases.join(' \\\\ ')}\\end{cases}`;
+            };
+            const rounded = value => Number(value.toFixed(3));
+            const showValue = value => Math.abs(value) < 0.0005 ? 0 : rounded(value);
+            const cases = [];
+
+            if (tab === 'fourier') {
+                cases.push(`a_n &\\approx ${asCases(active.map(h => ({ n: h.n, value: showValue(h.an) })))}`);
+                cases.push(`b_n &\\approx ${asCases(active.map(h => ({ n: h.n, value: showValue(h.bn) })))}`);
+            } else if (tab === 'exponential') {
+                const positive = active.map(h => ({ n: h.n, value: complexLatex(h.an / 2, -h.bn / 2) }));
+                const negative = active.map(h => ({ n: h.n, value: complexLatex(h.an / 2, h.bn / 2) }));
+                cases.push(`c_0 &\\approx ${dcOffset.toFixed(3)}`);
+                cases.push(`c_n &\\approx ${asCases(positive)}`);
+                cases.push(`c_{-n} &\\approx ${asCases(negative)}`);
+            } else if (tab === 'half-sine') {
+                const selected = halfSineHarmonics.slice(0, numTerms);
+                cases.push(`b_n &\\approx ${asCases(selected.map(h => ({ n: h.n, value: showValue(h.bn) })))}`);
+            } else if (tab === 'half-cosine') {
+                const selected = halfCosineHarmonics.slice(0, numTerms);
+                cases.push(`\\frac{a_0}{2} &\\approx ${dcOffset.toFixed(3)}`);
+                cases.push(`a_n &\\approx ${asCases(selected.map(h => ({ n: h.n, value: showValue(h.an) })))}`);
+            }
+
+            return `\\begin{aligned}${cases.join(' \\\\ ')} \\\\ &\\quad (1 \\le n \\le ${numTerms})\\end{aligned}`;
+        }
+
+        function complexLatex(realValue, imaginaryValue) {
+            const real = showSignedCoefficient(realValue);
+            const imaginary = showSignedCoefficient(imaginaryValue);
+            if (real === 0 && imaginary === 0) return '0';
+            if (real === 0) return `${imaginary < 0 ? '-' : ''}${Math.abs(imaginary).toFixed(3)}i`;
+            if (imaginary === 0) return real.toFixed(3);
+            return `${real.toFixed(3)} ${imaginary < 0 ? '-' : '+'} ${Math.abs(imaginary).toFixed(3)}i`;
+        }
+
+        function showSignedCoefficient(value) {
+            return Math.abs(value) < 0.0005 ? 0 : Number(value.toFixed(3));
+        }
+
+        // Pure JavaScript Offline LaTeX to HTML formatter
+        function latexToHtml(latex) {
+            if (!latex) return '';
+            let s = String(latex);
+
+            // Fractions: nested or simple \frac{a}{b}
+            let prev;
+            let iter = 0;
+            do {
+                prev = s;
+                s = s.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '<span class="frac"><span class="num">$1</span><span class="den">$2</span></span>');
+                iter++;
+            } while (s !== prev && iter < 6);
+
+            // Math symbols & Greek letters
+            s = s.replace(/\\pi\b/g, 'π')
+                 .replace(/\\approx\b/g, '≈')
+                 .replace(/\\ne\b/g, '≠')
+                 .replace(/\\le\b/g, '≤')
+                 .replace(/\\ge\b/g, '≥')
+                 .replace(/\\times\b/g, '×')
+                 .replace(/\\cdot\b/g, '·')
+                 .replace(/\\pm\b/g, '±')
+                 .replace(/\\infty\b/g, '∞')
+                 .replace(/\\angle\b/g, '∠')
+                 .replace(/\\circ\b/g, '°')
+                 .replace(/\\sum\b/g, '∑')
+                 .replace(/\\int\b/g, '∫')
+                 .replace(/\\operatorname\{atan2\}/g, 'atan2')
+                 .replace(/\\quad\b/g, '&emsp;')
+                 .replace(/\\qquad\b/g, '&emsp;&emsp;')
+                 .replace(/\\,|\\;|\\!/g, ' ')
+                 .replace(/\\text\{([^}]+)\}/g, '$1')
+                 .replace(/\\in\b/g, '∈')
+                 .replace(/\\dots\b/g, '…');
+
+            // Environments: cases
+            s = s.replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, (m, content) => {
+                const rows = content.split('\\\\').map(r => r.trim()).filter(Boolean);
+                const htmlRows = rows.map(r => {
+                    const parts = r.split('&');
+                    return `<div class="case-row"><span class="case-val">${parts[0] || ''}</span><span class="case-cond">${parts[1] || ''}</span></div>`;
+                }).join('');
+                return `<div class="cases-block"><span class="cases-brace">{</span><div class="cases-content">${htmlRows}</div></div>`;
+            });
+
+            // Environments: aligned
+            s = s.replace(/\\begin\{aligned\}([\s\S]*?)\\end\{aligned\}/g, (m, content) => {
+                return content.replace(/\\\\/g, '<br>').replace(/&/g, ' ');
+            });
+
+            // Subscripts: _{...} or _n
+            s = s.replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>');
+            s = s.replace(/_([a-zA-Z0-9+\-]+)/g, '<sub>$1</sub>');
+
+            // Superscripts: ^{...} or ^n
+            s = s.replace(/\^\{([^{}]+)\}/g, '<sup>$1</sup>');
+            s = s.replace(/\^([a-zA-Z0-9+\-]+)/g, '<sup>$1</sup>');
+
+            // Trigonometric / math functions
+            s = s.replace(/\\(cos|sin|tan|exp|ln|log|det|dim|max|min)\b/g, '$1');
+            s = s.replace(/\\([a-zA-Z]+)/g, '$1');
+            s = s.replace(/\\\\/g, '<br>');
+            s = s.replace(/[{}]/g, '');
+
+            return s;
+        }
+
+        function renderMathFormula(elem, latex, fallback, displayMode = false) {
+            if (!elem) return;
             if (window.katex) {
                 try {
-                    katex.render(latex, elem, { throwOnError: false });
+                    katex.render(latex, elem, { throwOnError: false, displayMode });
                     return;
                 } catch (e) { }
             }
-            elem.textContent = fallback;
+            elem.innerHTML = latexToHtml(latex || fallback || '');
         }
 
         // Apply Equation Button
@@ -1491,11 +2350,19 @@
             dutyBox.classList.remove('visible');
             waveTag.textContent = 'Custom';
             functionCardTitle.textContent = `Custom: ${input.length > 28 ? input.substring(0, 25) + '...' : input}`;
-            wave.length = 0;
+            // wave cleared atomically at next frame boundary alongside new harmonics
             computeFourierSeries();
             updateCoefficientsList();
             updateTabFormulas();
             updateBottomPanels();
+        });
+
+        // Enter key to apply custom equation
+        customExprInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('applyEquationBtn').click();
+            }
         });
 
         function toSub(n) {
@@ -1515,59 +2382,66 @@
                 // DC offset entry
                 const a0Div = document.createElement('div');
                 a0Div.className = 'coeff-item';
+                const isNum = isNumericalWaveform();
                 let a0Str = 'a_0 = 0';
                 if (currentWaveform === 'pulse') {
                     a0Str = showDecimal ? `a_0 = ${(2 * (2 * dutyCycle - 1)).toFixed(3)}` : `a_0 = 2(2(${dutyCycle})-1) = ${(2 * (2 * dutyCycle - 1)).toFixed(2)}`;
+                } else if (currentWaveform === 'custom' && currentCustomSolution && currentCustomSolution.a0Latex) {
+                    a0Str = currentCustomSolution.a0Latex;
+                } else if (isNum) {
+                    const relation = '\\approx';
+                    a0Str = `a_0 ${relation} ${(2 * dcOffset).toFixed(3)}`;
                 } else if (Math.abs(dcOffset) > 1e-4) {
                     a0Str = `a_0 = ${(2 * dcOffset).toFixed(3)}`;
                 }
-                const a0Fallback = `DC: ${dcOffset.toFixed(3)}`;
-                a0Div.innerHTML = `<span class="math-val" id="a0-render">${a0Str}</span><span class="approx-val" id="a0-approx">${a0Fallback}</span>`;
+                const a0Fallback = isNum
+                    ? `\\frac{a_0}{2} \\approx ${dcOffset.toFixed(3)}`
+                    : `DC: ${dcOffset.toFixed(3)}`;
+                a0Div.innerHTML = `<span class="math-val" id="a0-render">${latexToHtml(a0Str)}</span><span class="approx-val" id="a0-approx">${latexToHtml(a0Fallback)}</span>`;
                 listContainer.appendChild(a0Div);
                 if (window.katex) {
                     try {
-                        if (!showDecimal) katex.render(a0Str, a0Div.querySelector('#a0-render'), { throwOnError: false });
-                        katex.render(`a_0 = ${(2 * dcOffset).toFixed(3)}`, a0Div.querySelector('#a0-approx'), { throwOnError: false });
+                        katex.render(a0Str, a0Div.querySelector('#a0-render'), { throwOnError: false });
+                        const fallbackLatex = isNum ? a0Fallback : `a_0 = ${(2 * dcOffset).toFixed(3)}`;
+                        katex.render(fallbackLatex, a0Div.querySelector('#a0-approx'), { throwOnError: false });
                     } catch (e) { }
                 }
 
-                const displayHarmonics = harmonics.slice(0, Math.min(numTerms, 12));
+                const displayHarmonics = harmonics.slice(0, numTerms);
                 displayHarmonics.forEach(h => {
                     const item = document.createElement('div');
                     item.className = 'coeff-item';
+                    const relation = isNum ? '\\approx' : '=';
+                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    const phiLatex = `\\angle ${deg}^\\circ`;
+                    const cLatex = `|c_{${h.n}}| ${relation} ${h.cn.toFixed(3)}, \\; ${phiLatex}`;
+                    const cFallback = `|c${toSub(h.n)}| = ${h.cn.toFixed(3)}, ∠${deg}°`;
 
                     let aStr = '';
                     let bStr = '';
 
-                    if (showDecimal) {
-                        aStr = `a_{${h.n}} = ${h.an.toFixed(3)}`;
-                        bStr = `b_{${h.n}} = ${h.bn.toFixed(3)}`;
+                    if (showDecimal || isNum) {
+                        aStr = `a_{${h.n}} ${relation} ${h.an.toFixed(3)}`;
+                        bStr = `b_{${h.n}} ${relation} ${h.bn.toFixed(3)}`;
                     } else {
                         aStr = h.anMath || `a_{${h.n}} = ${h.an.toFixed(3)}`;
                         bStr = h.bnMath || `b_{${h.n}} = ${h.bn.toFixed(3)}`;
                     }
 
-                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
-                    const deg = Math.round(phi * 180 / Math.PI);
-                    const phiLatex = `\\angle ${deg}^\\circ`;
-                    const cLatex = `|c_{${h.n}}| = ${h.cn.toFixed(3)}, \\; ${phiLatex}`;
-                    const cFallback = `|c${toSub(h.n)}| = ${h.cn.toFixed(3)}, ∠${deg}°`;
-
                     item.innerHTML = `
                         <div style="display:flex; gap:10px; align-items:center;">
-                            <span class="math-val" id="an-render-${h.n}">${aStr}</span>
-                            <span class="math-val" id="bn-render-${h.n}">${bStr}</span>
+                            <span class="math-val" id="an-render-${h.n}">${latexToHtml(aStr)}</span>
+                            <span class="math-val" id="bn-render-${h.n}">${latexToHtml(bStr)}</span>
                         </div>
-                        <span class="approx-val" id="cn-mag-phase-${h.n}">${cFallback}</span>
+                        <span class="approx-val" id="cn-mag-phase-${h.n}">${latexToHtml(cLatex)}</span>
                     `;
                     listContainer.appendChild(item);
 
                     if (window.katex) {
                         try {
-                            if (!showDecimal) {
-                                katex.render(aStr, item.querySelector(`#an-render-${h.n}`), { throwOnError: false });
-                                katex.render(bStr, item.querySelector(`#bn-render-${h.n}`), { throwOnError: false });
-                            }
+                            katex.render(aStr, item.querySelector(`#an-render-${h.n}`), { throwOnError: false });
+                            katex.render(bStr, item.querySelector(`#bn-render-${h.n}`), { throwOnError: false });
                             katex.render(cLatex, item.querySelector(`#cn-mag-phase-${h.n}`), { throwOnError: false });
                         } catch (e) { }
                     }
@@ -1579,7 +2453,7 @@
                 const c0Div = document.createElement('div');
                 c0Div.className = 'coeff-item';
                 let c0Str = `c_0 = ${(dcOffset).toFixed(3)}`;
-                c0Div.innerHTML = `<span class="math-val" id="c0-render">${c0Str}</span><span class="approx-val" id="c0-approx">c₀ = a₀/2</span>`;
+                c0Div.innerHTML = `<span class="math-val" id="c0-render">${latexToHtml(c0Str)}</span><span class="approx-val" id="c0-approx">${latexToHtml(`c_0 = \\frac{a_0}{2} = ${(dcOffset).toFixed(3)}`)}</span>`;
                 listContainer.appendChild(c0Div);
                 if (window.katex) {
                     try {
@@ -1588,7 +2462,7 @@
                     } catch (e) { }
                 }
 
-                const displayHarmonics = harmonics.slice(0, Math.min(numTerms, 12));
+                const displayHarmonics = harmonics.slice(0, numTerms);
                 displayHarmonics.forEach(h => {
                     const item = document.createElement('div');
                     item.className = 'coeff-item';
@@ -1606,8 +2480,8 @@
                             cnStr = `c_{${h.n}} = -${halfBn.toFixed(3)}i`;
                             cNegStr = `c_{-${h.n}} = +${halfBn.toFixed(3)}i`;
                         } else {
-                            cnStr = `c_{${h.n}} = ${halfAn.toFixed(3)} - ${halfBn.toFixed(3)}i`;
-                            cNegStr = `c_{-${h.n}} = ${halfAn.toFixed(3)} + ${halfBn.toFixed(3)}i`;
+                            cnStr = `c_{${h.n}} = ${halfAn.toFixed(3)}` + ` - ${halfBn.toFixed(3)}` + `i`;
+                            cNegStr = `c_{-${h.n}} = ${halfAn.toFixed(3)}` + ` + ${halfBn.toFixed(3)}` + `i`;
                         }
                     } else {
                         if (currentWaveform === 'square') {
@@ -1626,8 +2500,8 @@
                             cnStr = h.n === 1 ? `c_1 = -\\frac{i}{2}` : `c_{${h.n}} = 0`;
                             cNegStr = h.n === 1 ? `c_{-1} = \\frac{i}{2}` : `c_{-${h.n}} = 0`;
                         } else {
-                            cnStr = `c_{${h.n}} = ${(halfAn).toFixed(3)} - ${(halfBn).toFixed(3)}i`;
-                            cNegStr = `c_{-${h.n}} = ${(halfAn).toFixed(3)} + ${(halfBn).toFixed(3)}i`;
+                            cnStr = `c_{${h.n}} = ${(halfAn).toFixed(3)}` + ` - ${(halfBn).toFixed(3)}` + `i`;
+                            cNegStr = `c_{-${h.n}} = ${(halfAn).toFixed(3)}` + ` + ${(halfBn).toFixed(3)}` + `i`;
                         }
                     }
 
@@ -1639,10 +2513,10 @@
 
                     item.innerHTML = `
                         <div style="display:flex; gap:12px; align-items:center;">
-                            <span class="math-val" id="cn-render-${h.n}">${cnStr}</span>
-                            <span class="math-val" id="cneg-render-${h.n}">${cNegStr}</span>
+                            <span class="math-val" id="cn-render-${h.n}">${latexToHtml(cnStr)}</span>
+                            <span class="math-val" id="cneg-render-${h.n}">${latexToHtml(cNegStr)}</span>
                         </div>
-                        <span class="approx-val" id="cn-mag-phase-exp-${h.n}">${cFallback}</span>
+                        <span class="approx-val" id="cn-mag-phase-exp-${h.n}">${latexToHtml(cLatex)}</span>
                     `;
                     listContainer.appendChild(item);
 
@@ -1656,7 +2530,7 @@
                 });
             } else if (activeTab === 'half-sine') {
                 headerLabel.textContent = 'Half-Range Sine Coefficients (bₙ for sin(nπx))';
-                const display = halfSineHarmonics.slice(0, Math.min(numTerms, 12));
+                const display = halfSineHarmonics.slice(0, numTerms);
                 display.forEach(h => {
                     const item = document.createElement('div');
                     item.className = 'coeff-item';
@@ -1671,8 +2545,8 @@
                     const bLatex = `b_{${h.n}} = ${h.bn.toFixed(3)}`;
                     const bFallback = `b${toSub(h.n)} = ${h.bn.toFixed(3)}`;
                     item.innerHTML = `
-                        <span class="math-val" id="hs-render-${h.n}">${bStr}</span>
-                        <span class="approx-val" id="hs-approx-${h.n}">${bFallback}</span>
+                        <span class="math-val" id="hs-render-${h.n}">${latexToHtml(bStr)}</span>
+                        <span class="approx-val" id="hs-approx-${h.n}">${latexToHtml(bFallback)}</span>
                     `;
                     listContainer.appendChild(item);
                     if (window.katex) {
@@ -1688,7 +2562,7 @@
                 const a0Div = document.createElement('div');
                 a0Div.className = 'coeff-item';
                 let a0Str = `a_0 = ${(2 * dcOffset).toFixed(3)}`;
-                a0Div.innerHTML = `<span class="math-val" id="hc-a0-render">${a0Str}</span><span class="approx-val" id="hc-a0-approx">a₀ = ${(2 * dcOffset).toFixed(3)}</span>`;
+                a0Div.innerHTML = `<span class="math-val" id="hc-a0-render">${latexToHtml(a0Str)}</span><span class="approx-val" id="hc-a0-approx">${latexToHtml(`a_0 = ${(2 * dcOffset).toFixed(3)}`)}</span>`;
                 listContainer.appendChild(a0Div);
                 if (window.katex) {
                     try {
@@ -1697,7 +2571,7 @@
                     } catch (e) { }
                 }
 
-                const display = halfCosineHarmonics.slice(0, Math.min(numTerms, 12));
+                const display = halfCosineHarmonics.slice(0, numTerms);
                 display.forEach(h => {
                     const item = document.createElement('div');
                     item.className = 'coeff-item';
@@ -1710,8 +2584,8 @@
                     const aLatex = `a_{${h.n}} = ${h.an.toFixed(3)}`;
                     const aFallback = `a${toSub(h.n)} = ${h.an.toFixed(3)}`;
                     item.innerHTML = `
-                        <span class="math-val" id="hc-render-${h.n}">${aStr}</span>
-                        <span class="approx-val" id="hc-approx-${h.n}">${aFallback}</span>
+                        <span class="math-val" id="hc-render-${h.n}">${latexToHtml(aStr)}</span>
+                        <span class="approx-val" id="hc-approx-${h.n}">${latexToHtml(aFallback)}</span>
                     `;
                     listContainer.appendChild(item);
                     if (window.katex) {
@@ -1734,6 +2608,9 @@
         function drawAmplitudeSpectrum() {
             const w = ampCanvas.width;
             const h = ampCanvas.height;
+            const gridColor = isLightMode ? 'rgba(32,53,61,0.18)' : 'rgba(255,255,255,0.08)';
+            const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.35)';
+            const labelColor = isLightMode ? '#42575e' : '#e6e8f5';
             ampCtx.clearRect(0, 0, w, h);
 
             const K = spectrumTerms;
@@ -1762,19 +2639,19 @@
                 const y = padTop + plotH * (1 - frac);
                 const val = (niceMax * frac).toFixed(1);
 
-                ampCtx.strokeStyle = g === 0 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)';
+                ampCtx.strokeStyle = g === 0 ? axisColor : gridColor;
                 ampCtx.lineWidth = 1;
                 ampCtx.beginPath();
                 ampCtx.moveTo(padLeft, y);
                 ampCtx.lineTo(w - padRight, y);
                 ampCtx.stroke();
 
-                ampCtx.fillStyle = '#9aa0c2';
+                ampCtx.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
                 ampCtx.fillText(val, padLeft - 4, y);
             }
 
             // Draw X-Axis Baseline
-            ampCtx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ampCtx.strokeStyle = axisColor;
             ampCtx.lineWidth = 1.2;
             ampCtx.beginPath();
             ampCtx.moveTo(padLeft, padTop + plotH);
@@ -1799,7 +2676,8 @@
                 // X-Axis Harmonic Labels
                 const showLabel = K <= 16 || (i + 1) % 2 !== 0 || i === 0;
                 if (showLabel) {
-                    ampCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+                    ampCtx.strokeStyle = gridColor;
+                    ampCtx.fillStyle = labelColor;
                     ampCtx.lineWidth = 1;
                     ampCtx.beginPath();
                     ampCtx.moveTo(x + barW / 2, padTop + plotH);
@@ -1818,6 +2696,9 @@
         function drawPhaseSpectrum() {
             const w = phaseCanvas.width;
             const h = phaseCanvas.height;
+            const gridColor = isLightMode ? 'rgba(32,53,61,0.18)' : 'rgba(255,255,255,0.08)';
+            const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.35)';
+            const labelColor = isLightMode ? '#42575e' : '#e6e8f5';
             phaseCtx.clearRect(0, 0, w, h);
 
             const K = spectrumTerms;
@@ -1845,7 +2726,7 @@
             phaseTicks.forEach(tick => {
                 const y = centerY - tick.frac * (plotH / 2);
 
-                phaseCtx.strokeStyle = tick.frac === 0 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.08)';
+                phaseCtx.strokeStyle = tick.frac === 0 ? axisColor : gridColor;
                 phaseCtx.lineWidth = 1;
                 phaseCtx.setLineDash(tick.frac === 0 ? [] : [2, 2]);
                 phaseCtx.beginPath();
@@ -1936,29 +2817,41 @@
             const gw = gibbsCanvas.width;
             const gh = gibbsCanvas.height;
             gibbsCtx.clearRect(0, 0, gw, gh);
-
-            const midY = gh * 0.45;
-            gibbsCtx.strokeStyle = 'rgba(255,255,255,0.2)';
-            gibbsCtx.lineWidth = 1;
-            gibbsCtx.setLineDash([2, 2]);
-            gibbsCtx.beginPath();
-            gibbsCtx.moveTo(0, midY);
-            gibbsCtx.lineTo(gw, midY);
-            gibbsCtx.stroke();
-            gibbsCtx.setLineDash([]);
-
-            gibbsCtx.strokeStyle = '#ff7e5f';
-            gibbsCtx.lineWidth = 1.8;
-            gibbsCtx.beginPath();
-
             const active = harmonics.slice(0, numTerms);
+            const values = new Float64Array(gw);
+            let minValue = Infinity;
+            let maxValue = -Infinity;
             for (let px = 0; px < gw; px++) {
                 const x = (px / gw) * 0.28;
                 let val = dcOffset;
                 active.forEach(h => {
                     val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
                 });
-                const py = midY - val * (gh * 0.35);
+                values[px] = val;
+                minValue = Math.min(minValue, val);
+                maxValue = Math.max(maxValue, val);
+            }
+
+            const pad = Math.max(8, gh * 0.1);
+            const valueRange = Math.max(maxValue - minValue, 1e-6);
+            const yForValue = value => gh - pad - ((value - minValue) / valueRange) * (gh - 2 * pad);
+            if (minValue <= 0 && maxValue >= 0) {
+                const zeroY = yForValue(0);
+                gibbsCtx.strokeStyle = isLightMode ? 'rgba(32,53,61,0.24)' : 'rgba(255,255,255,0.25)';
+                gibbsCtx.lineWidth = 1;
+                gibbsCtx.setLineDash([2, 2]);
+                gibbsCtx.beginPath();
+                gibbsCtx.moveTo(0, zeroY);
+                gibbsCtx.lineTo(gw, zeroY);
+                gibbsCtx.stroke();
+                gibbsCtx.setLineDash([]);
+            }
+
+            gibbsCtx.strokeStyle = '#ff7e5f';
+            gibbsCtx.lineWidth = 1.8;
+            gibbsCtx.beginPath();
+            for (let px = 0; px < gw; px++) {
+                const py = yForValue(values[px]);
                 if (px === 0) gibbsCtx.moveTo(px, py);
                 else gibbsCtx.lineTo(px, py);
             }
@@ -2118,7 +3011,7 @@
                 waveTag.textContent = 'Drawn';
                 functionCardTitle.textContent = 'Drawn Waveform: f(x)';
                 customExprInput.value = 'Drawn function (sampled 1024 points)';
-                wave.length = 0;
+                // wave cleared atomically at next frame boundary alongside new harmonics
                 computeFourierSeries();
                 updateCoefficientsList();
                 updateTabFormulas();
@@ -2154,6 +3047,9 @@
 
         // Init App
         window.addEventListener('DOMContentLoaded', () => {
+            let savedTheme = 'dark';
+            try { savedTheme = localStorage.getItem('fourier-theme') || 'dark'; } catch (e) { }
+            setTheme(savedTheme === 'light');
             resizeCanvases();
             initThumbnails();
             setupDrawModal();
