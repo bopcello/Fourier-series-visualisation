@@ -20,50 +20,191 @@
             --slider-track: #2a254d;
         }
 
-        /* Pure CSS Offline Math Typography */
-        .math-expr, .math-val, .main-formula, .sub-formula {
-            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+        /* Pure CSS Offline Math Typography - Textbook Quality */
+        .math-expr,
+        .math-val,
+        .main-formula,
+        .sub-formula,
+        .exp-main-formula,
+        .exp-sub-formula,
+        .analytical-formula-block {
+            font-family: 'Cambria Math', 'STIX Two Math', 'KaTeX_Math', 'Times New Roman', serif;
             letter-spacing: 0.02em;
         }
+
         .frac {
             display: inline-flex;
             flex-direction: column;
-            vertical-align: -0.45em;
+            vertical-align: middle;
             text-align: center;
-            padding: 0 2px;
+            padding: 0 3px;
             font-size: 0.9em;
-            line-height: 1;
+            line-height: 1.1;
+            margin: 0 1px;
         }
-        .frac > .num {
-            border-bottom: 1px solid currentColor;
-            padding-bottom: 1px;
-            line-height: 1;
+
+        .frac>.num {
+            display: block;
+            border-bottom: 1.2px solid currentColor;
+            padding-bottom: 1.5px;
+            line-height: 1.1;
+            text-align: center;
         }
-        .frac > .den {
-            padding-top: 1px;
-            line-height: 1;
+
+        .frac>.den {
+            display: block;
+            padding-top: 1.5px;
+            line-height: 1.1;
+            text-align: center;
         }
+
+        .sum-block {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            line-height: 1;
+            position: relative;
+        }
+
+        .sum-block>.sum-sym {
+            font-size: 1.75em;
+            line-height: 0.85;
+            margin: 0;
+            display: block;
+            text-align: center;
+            font-weight: 300;
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+        }
+
+        .sum-block>.over {
+            font-size: 0.72em;
+            line-height: 1;
+            margin-bottom: 1px;
+            display: block;
+            text-align: center;
+            color: inherit;
+            opacity: 0.92;
+        }
+
+        .sum-block>.under {
+            font-size: 0.72em;
+            line-height: 1;
+            margin-top: 1px;
+            display: block;
+            text-align: center;
+            color: inherit;
+            opacity: 0.92;
+        }
+
+        .int-block {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 3px;
+            line-height: 1;
+            position: relative;
+        }
+
+        .int-block>.int-sym {
+            font-size: 1.85em;
+            line-height: 0.85;
+            margin: 0 1px 0 0;
+            display: inline-block;
+            font-weight: 300;
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+        }
+
+        .int-block>.int-limits {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 1.7em;
+            font-size: 0.66em;
+            line-height: 1;
+            margin-right: 3px;
+            margin-left: -1px;
+            opacity: 0.95;
+            vertical-align: middle;
+        }
+
+        .int-block>.int-limits>.int-top {
+            display: block;
+            line-height: 1;
+            transform: translateY(-2px);
+        }
+
+        .int-block>.int-limits>.int-bot {
+            display: block;
+            line-height: 1;
+            transform: translateY(2px);
+        }
+
         .cases-block {
             display: inline-flex;
             align-items: center;
             text-align: left;
-            margin: 2px 0;
+            margin: 3px 0;
+            vertical-align: middle;
         }
+
         .cases-brace {
-            font-size: 1.8em;
+            font-size: 2.1em;
             font-weight: 200;
             line-height: 1;
-            margin-right: 4px;
+            margin-right: 5px;
             user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            align-self: center;
+            color: var(--accent-peach);
         }
+
         .cases-content {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
         }
+
         .case-row {
             display: flex;
-            gap: 8px;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .case-val {
+            min-width: 24px;
+        }
+
+        .case-cond {
+            color: var(--text-dim);
+            font-size: 0.92em;
+        }
+
+        /* Square-root vinculum (radical without brackets) */
+        .surd {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+        }
+
+        .surd-sym {
+            font-size: 1.25em;
+            line-height: 1;
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+            font-weight: 300;
+            display: inline-block;
+            transform: scaleY(0.9);
+            margin-right: -1px;
+        }
+
+        .surd-body {
+            display: inline-block;
+            border-top: 1.3px solid currentColor;
+            padding: 0 2px;
+            line-height: 1.3;
+            margin-top: 1px;
         }
 
         * {
@@ -430,8 +571,8 @@
 
         .coeff-item .math-val {
             color: #fff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.74rem;
+            font-family: 'Cambria Math', 'STIX Two Math', 'KaTeX_Math', 'Times New Roman', serif;
+            font-size: 0.76rem;
         }
 
         .coeff-item .approx-val {
@@ -446,6 +587,12 @@
         .coeff-item .approx-val .katex {
             font-size: 0.74rem;
             color: var(--accent-peach);
+        }
+
+        #phaseSubtitleMath .katex,
+        #phaseModalSubtitleMath .katex {
+            color: var(--accent-cyan);
+            font-size: 0.68rem;
         }
 
         /* RIGHT COLUMN: Canvas, Controls, and 3 Panels */
@@ -655,12 +802,26 @@
         }
 
         .gibbs-formula {
-            font-size: 0.66rem;
+            font-size: 0.72rem;
             color: #feb47b;
             background: rgba(0, 0, 0, 0.25);
-            padding: 3px 5px;
+            padding: 4px 8px;
             border-radius: 4px;
             text-align: center;
+            font-family: 'Cambria Math', 'STIX Two Math', 'KaTeX_Math', 'Times New Roman', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gibbs-formula .katex,
+        .gibbs-formula .katex-display {
+            color: #feb47b;
+            font-size: 1em;
+        }
+
+        .gibbs-formula .katex-display {
+            margin: 0;
         }
 
         #gibbsCanvas {
@@ -847,6 +1008,776 @@
             display: flex;
             gap: 6px;
         }
+
+        /* ------------------------------------------------------------------ */
+        /* EXPANDED MODAL OVERLAY & POPUP STYLES (80vw x 80vh, 50% Overlay)   */
+        /* ------------------------------------------------------------------ */
+
+        /* Clickable cues on main panels */
+        .sub-panel.clickable-panel,
+        .coeff-card.clickable-card {
+            cursor: pointer;
+            transition: border-color 0.22s, box-shadow 0.22s, transform 0.15s;
+        }
+
+        .sub-panel.clickable-panel:hover {
+            border-color: rgba(79, 172, 254, 0.45);
+            box-shadow: 0 4px 18px rgba(79, 172, 254, 0.12);
+        }
+
+        .coeff-card.clickable-card:hover {
+            border-color: rgba(139, 124, 248, 0.45);
+            box-shadow: 0 4px 18px rgba(139, 124, 248, 0.12);
+        }
+
+        .panel-expand-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-dim);
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .panel-expand-btn:hover {
+            background: var(--accent-purple);
+            color: #ffffff;
+            border-color: var(--accent-purple);
+            transform: scale(1.12);
+            box-shadow: 0 0 12px rgba(139, 124, 248, 0.5);
+        }
+
+        /* 50% opacity black overlay with blur */
+        .expanded-overlay-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            /* Exactly 50% opacity black overlay */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+        }
+
+        .expanded-overlay-bg.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        /* 80% screen width and height modal card with spring grow animation */
+        .expanded-modal-box {
+            width: 80vw;
+            height: 80vh;
+            max-width: 80vw;
+            max-height: 80vh;
+            background: #141128;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(139, 124, 248, 0.14);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.72) translateY(30px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.40s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .expanded-modal-box.active {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Modal Header */
+        .expanded-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.28);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .expanded-modal-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .expanded-modal-icon-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .expanded-modal-icon-badge.amp-badge {
+            background: rgba(79, 172, 254, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+
+        .expanded-modal-icon-badge.phase-badge {
+            background: rgba(56, 239, 125, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+        }
+
+        .expanded-modal-icon-badge.coeff-badge {
+            background: rgba(139, 124, 248, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(139, 124, 248, 0.3);
+        }
+
+        .expanded-modal-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .expanded-modal-subtitle {
+            font-size: 0.76rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .expanded-modal-subtitle .sep {
+            opacity: 0.4;
+        }
+
+        .expanded-close-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-dim);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .expanded-close-btn:hover {
+            background: rgba(255, 126, 95, 0.2);
+            color: var(--accent-coral);
+            border-color: rgba(255, 126, 95, 0.4);
+            transform: scale(1.08);
+        }
+
+        /* Toolbar inside expanded modal */
+        .expanded-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background: rgba(0, 0, 0, 0.18);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+            gap: 16px;
+        }
+
+        .expanded-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+        }
+
+        .expanded-slider-wrap label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .expanded-range-slider {
+            flex: 1;
+        }
+
+        .expanded-stat-chips {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stat-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-chip .chip-label {
+            color: var(--text-dim);
+        }
+
+        .stat-chip .chip-val {
+            font-weight: 700;
+            color: #ffffff;
+            font-family: monospace;
+        }
+
+        .stat-chip.highlight {
+            background: rgba(139, 124, 248, 0.1);
+            border-color: rgba(139, 124, 248, 0.25);
+            color: var(--accent-peach);
+        }
+
+        /* Expanded Canvas container */
+        .expanded-canvas-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            padding: 12px 18px 14px 18px;
+            background: radial-gradient(circle at 50% 30%, rgba(26, 21, 54, 0.4) 0%, rgba(13, 11, 26, 0.8) 100%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expanded-canvas-container canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 10px;
+            cursor: crosshair;
+        }
+
+        /* Floating Tooltip on Hover */
+        .graph-tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(18, 14, 38, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(79, 172, 254, 0.2);
+            font-size: 0.75rem;
+            color: #ffffff;
+            display: none;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .graph-tooltip.visible {
+            display: block;
+        }
+
+        .tooltip-title {
+            font-weight: 700;
+            color: var(--accent-peach);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+        }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin: 2px 0;
+            font-size: 0.73rem;
+        }
+
+        .tooltip-key {
+            color: var(--text-dim);
+        }
+
+        .tooltip-val {
+            font-weight: 600;
+            font-family: monospace;
+            color: #fff;
+        }
+
+        /* ------------------------------------------------------------------ */
+        /* EXPANDED COEFFICIENT LABORATORY: 2-PANEL LAYOUT                   */
+        /* ------------------------------------------------------------------ */
+        .expanded-coeff-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 0;
+            overflow: hidden;
+            background: #110e24;
+        }
+
+        /* Left Column: Computed Constants */
+        .expanded-coeff-left {
+            background: rgba(0, 0, 0, 0.22);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 12px 14px;
+            gap: 10px;
+        }
+
+        .coeff-subheading {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .constants-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            padding-right: 4px;
+        }
+
+        .constant-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 9px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .constant-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .constant-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-peach);
+        }
+
+        .constant-badge {
+            font-size: 0.63rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(139, 124, 248, 0.15);
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        .constant-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .constant-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .c-key {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+        }
+
+        .c-val {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: monospace;
+        }
+
+        .c-desc {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            line-height: 1.25;
+            margin-top: 2px;
+        }
+
+        .energy-bar-wrap {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 3px 0;
+        }
+
+        .energy-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38ef7d, #00f2fe);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .symmetry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.68rem;
+        }
+
+        .sym-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+
+        .sym-status {
+            font-weight: 600;
+        }
+
+        .analytical-formula-block {
+            font-size: 0.78rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 10px;
+            border-radius: 6px;
+            color: var(--text-main);
+            line-height: 1.4;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .exp-coeff-formula-panel {
+            background: linear-gradient(135deg, rgba(26, 22, 54, 0.85) 0%, rgba(13, 11, 26, 0.95) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            padding: 10px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        .exp-main-formula {
+            font-size: 0.96rem;
+            color: var(--accent-peach);
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        .exp-sub-formula {
+            font-size: 0.86rem;
+            color: var(--text-main);
+            text-align: center;
+            line-height: 1.35;
+            max-height: 90px;
+            overflow-y: auto;
+        }
+
+        /* Right Column: Coefficients Matrix Table */
+        .expanded-coeff-right {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 12px 18px;
+            gap: 8px;
+        }
+
+        .coeff-table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .table-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coeff-table-scroll-wrap {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 9px;
+            background: rgba(0, 0, 0, 0.22);
+        }
+
+        .coeff-detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.73rem;
+            text-align: left;
+        }
+
+        .coeff-detail-table thead {
+            position: sticky;
+            top: 0;
+            background: #191535;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .coeff-detail-table th {
+            padding: 8px 10px;
+            font-weight: 700;
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            white-space: nowrap;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .coeff-detail-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+            font-size: 0.72rem;
+            transition: background 0.15s ease;
+        }
+
+        .coeff-detail-table tbody tr:hover td {
+            background: rgba(139, 124, 248, 0.1);
+        }
+
+        .coeff-detail-table tbody tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .coeff-detail-table tbody tr.dc-row td {
+            background: rgba(254, 180, 123, 0.06);
+            font-weight: 600;
+        }
+
+        /* Column Specific highlights */
+        .col-n {
+            width: 50px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .val-an {
+            color: #74c0fc;
+        }
+
+        .val-bn {
+            color: var(--accent-peach);
+        }
+
+        .val-mag {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .val-phase {
+            color: #d0bfff;
+        }
+
+        .val-cn {
+            color: #fcc2d7;
+        }
+
+        .val-cneg {
+            color: #fcc2d7;
+        }
+
+        .val-hs {
+            color: #63e6be;
+        }
+
+        .val-hc {
+            color: #a9e34b;
+        }
+
+        .val-zero {
+            opacity: 0.32;
+            font-weight: 400;
+            color: var(--text-dim) !important;
+        }
+
+        /* Light mode overrides for expanded modals */
+        body.light-mode .expanded-modal-box {
+            background: #ffffff;
+            border-color: rgba(31, 53, 61, 0.2);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25), 0 0 35px rgba(79, 172, 254, 0.15);
+        }
+
+        body.light-mode .expanded-modal-header {
+            background: #f4f8f8;
+            border-bottom-color: rgba(31, 53, 61, 0.12);
+        }
+
+        body.light-mode .expanded-modal-title {
+            color: #20353d;
+        }
+
+        body.light-mode .expanded-toolbar {
+            background: #fafcfc;
+            border-bottom-color: rgba(31, 53, 61, 0.1);
+        }
+
+        body.light-mode .stat-chip {
+            background: #eef4f5;
+            border-color: rgba(31, 53, 61, 0.12);
+        }
+
+        body.light-mode .stat-chip .chip-val {
+            color: #20353d;
+        }
+
+        body.light-mode .expanded-canvas-container {
+            background: radial-gradient(circle at 50% 30%, #f6fafa 0%, #ebf2f2 100%);
+        }
+
+        body.light-mode .graph-tooltip {
+            background: rgba(255, 255, 255, 0.96);
+            border-color: rgba(31, 53, 61, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            color: #20353d;
+        }
+
+        body.light-mode .tooltip-val {
+            color: #20353d;
+        }
+
+        body.light-mode .expanded-coeff-layout {
+            background: #ffffff;
+        }
+
+        body.light-mode .exp-coeff-formula-panel {
+            background: linear-gradient(135deg, #f0f7f8 0%, #e5f0f1 100%);
+            border-bottom-color: rgba(31, 53, 61, 0.15);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        }
+
+        body.light-mode .exp-main-formula {
+            color: #d9480f;
+        }
+
+        body.light-mode .exp-sub-formula {
+            color: #20353d;
+        }
+
+        body.light-mode .expanded-coeff-left {
+            background: #f7fafa;
+            border-right-color: rgba(31, 53, 61, 0.12);
+        }
+
+        body.light-mode .constant-card {
+            background: #ffffff;
+            border-color: rgba(31, 53, 61, 0.12);
+        }
+
+        body.light-mode .c-val {
+            color: #20353d;
+        }
+
+        body.light-mode .coeff-subheading {
+            color: #20353d;
+        }
+
+        body.light-mode .coeff-table-scroll-wrap {
+            background: #ffffff;
+            border-color: rgba(31, 53, 61, 0.14);
+        }
+
+        body.light-mode .coeff-detail-table thead {
+            background: #e9f1f2;
+        }
+
+        body.light-mode .coeff-detail-table th {
+            color: #51656b;
+            border-bottom-color: rgba(31, 53, 61, 0.16);
+        }
+
+        body.light-mode .coeff-detail-table td {
+            border-bottom-color: rgba(31, 53, 61, 0.08);
+            color: #20353d;
+        }
+
+        body.light-mode .coeff-detail-table tbody tr:nth-child(even) td {
+            background: #f8fbfb;
+        }
+
+        body.light-mode .coeff-detail-table tbody tr:hover td {
+            background: rgba(79, 172, 254, 0.12);
+        }
+
+        body.light-mode .val-an {
+            color: #0288d1;
+        }
+
+        body.light-mode .val-bn {
+            color: #e65100;
+        }
+
+        body.light-mode .val-mag {
+            color: #00897b;
+        }
+
+        body.light-mode .val-phase {
+            color: #6a1b9a;
+        }
+
+        body.light-mode .val-cn {
+            color: #c2185b;
+        }
+
+        body.light-mode .val-cneg {
+            color: #c2185b;
+        }
+
+        body.light-mode .val-hs {
+            color: #2e7d32;
+        }
+
+        body.light-mode .val-hc {
+            color: #558b2f;
+        }
+
+        body.light-mode .val-zero {
+            opacity: 0.35;
+            color: #90a4ae !important;
+        }
     </style>
 </head>
 
@@ -921,7 +1852,8 @@
                 </div>
                 <textarea class="custom-input" id="customExpr" spellcheck="false">x < 0.5 ? 1 : -1</textarea>
                 <div class="custom-hint">
-                    Use <strong>x</strong> in [0, 1]. Solves closed-form Bessel <em>exp(0.8*cos(2*pi*x))</em>, polynomials <em>x^2</em>, exponentials <em>exp(2x)</em>, CAS integrals & piecewises. Enter to apply.
+                    Use <strong>x</strong> in [0, 1]. Solves closed-form Bessel <em>exp(0.8*cos(2*pi*x))</em>,
+                    polynomials <em>x^2</em>, exponentials <em>exp(2x)</em>, CAS integrals & piecewises. Enter to apply.
                 </div>
                 <div class="btn-group">
                     <button class="action-btn" id="openDrawModalBtn">
@@ -934,10 +1866,14 @@
             </div>
 
             <!-- 3. Coefficient Laboratory -->
-            <div class="card coeff-card">
+            <div class="card coeff-card clickable-card" id="coeffCard" title="Click to expand">
                 <div class="card-header">
                     <span class="card-title">Coefficient laboratory</span>
-                    <span class="card-tag" id="coeffModeTag">Fourier series</span>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="card-tag" id="coeffModeTag">Fourier series</span>
+                        <button class="panel-expand-btn" id="expandCoeffBtn" title="Expand"
+                            onclick="event.stopPropagation(); openExpandedModal('coeff')">⤢</button>
+                    </div>
                 </div>
 
                 <div class="coeff-tabs">
@@ -988,7 +1924,7 @@
                         <span>Number of Terms:</span>
                         <span class="val-num" id="termsValue">5</span>
                     </div>
-                    <input type="range" id="terms" min="1" max="32" value="5">
+                    <input type="range" id="terms" min="1" max="100" value="5">
                 </div>
                 <div class="slider-group">
                     <div class="slider-label">
@@ -1027,19 +1963,27 @@
             <!-- 4. BOTTOM 3 PANELS: Amplitude, Phase, Gibbs Phenomenon -->
             <div class="bottom-panels-grid">
                 <!-- Panel 1: Amplitude Spectrum (Autoscaled with Gridlines) -->
-                <div class="sub-panel">
+                <div class="sub-panel clickable-panel" id="ampPanel" title="Click to expand">
                     <div class="panel-title">
-                        <span>Amplitude Spectrum</span>
-                        <span style="color:var(--accent-blue); font-size:0.65rem;">|cₙ| = √(aₙ²+bₙ²)</span>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span>Amplitude Spectrum</span>
+                            <button class="panel-expand-btn" id="expandAmpBtn" title="Expand"
+                                onclick="event.stopPropagation(); openExpandedModal('amp')">⤢</button>
+                        </div>
+                        <span style="color:var(--accent-blue); font-size:0.65rem;" class="math-expr">|<i>c</i><sub>n</sub>| = <span class="surd"><span class="surd-sym">√</span><span class="surd-body"><i>a</i><sub>n</sub>²+<i>b</i><sub>n</sub>²</span></span></span>
                     </div>
                     <canvas id="ampCanvas" class="chart-canvas"></canvas>
                 </div>
 
                 <!-- Panel 2: Phase Spectrum (Gridlines & Markings) -->
-                <div class="sub-panel">
+                <div class="sub-panel clickable-panel" id="phasePanel" title="Click to expand">
                     <div class="panel-title">
-                        <span>Phase Spectrum</span>
-                        <span style="color:var(--accent-cyan); font-size:0.65rem;">φₙ = atan2(-bₙ, aₙ)</span>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span>Phase Spectrum</span>
+                            <button class="panel-expand-btn" id="expandPhaseBtn" title="Expand"
+                                onclick="event.stopPropagation(); openExpandedModal('phase')">⤢</button>
+                        </div>
+                        <span style="color:var(--accent-cyan); font-size:0.68rem;" class="math-expr" id="phaseSubtitleMath"></span>
                     </div>
                     <canvas id="phaseCanvas" class="chart-canvas"></canvas>
                 </div>
@@ -1056,9 +2000,7 @@
                             <span id="overshootPct" style="color:var(--accent-peach); font-weight:700;">8.95%
                                 (Wilbraham–Gibbs)</span>
                         </div>
-                        <div class="gibbs-formula" id="gibbsFormulaBox">
-                            Δ = (1/π) ∫₀^π (sin t / t) dt - 1/2 ≈ 8.949%
-                        </div>
+                        <div class="gibbs-formula" id="gibbsFormulaBox"></div>
                         <canvas id="gibbsCanvas"></canvas>
                     </div>
                 </div>
@@ -1068,6 +2010,245 @@
                     <label>Spectrum Harmonics: <strong id="specTermsVal"
                             style="color:var(--accent-peach)">16</strong></label>
                     <input type="range" id="spectrumTermsSlider" min="4" max="32" value="16" step="1" style="flex:1;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- EXPANDED MODAL: Amplitude Spectrum                               -->
+    <!-- ================================================================ -->
+    <div class="expanded-overlay-bg" id="expandedAmpOverlay">
+        <div class="expanded-modal-box" id="expandedAmpBox">
+            <div class="expanded-modal-header">
+                <div class="expanded-modal-title-group">
+                    <div class="expanded-modal-icon-badge amp-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="expanded-modal-title">Amplitude Spectrum</div>
+                        <div class="expanded-modal-subtitle">
+                            <span class="math-expr">|<i>c</i><sub>n</sub>| = <span class="surd"><span class="surd-sym">√</span><span class="surd-body"><i>a</i><sub>n</sub>²+<i>b</i><sub>n</sub>²</span></span></span>
+                            <span class="sep">•</span>
+                            <span id="ampModalWaveLabel" style="color:var(--accent-peach);">Square Wave</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="expanded-close-btn" onclick="closeExpandedModal('amp')">×</button>
+            </div>
+            <div class="expanded-toolbar">
+                <div class="expanded-slider-wrap">
+                    <label>Spectrum Harmonics: <strong id="expAmpSpecTermsVal"
+                            style="color:var(--accent-peach);">16</strong></label>
+                    <input type="range" class="expanded-range-slider" id="expAmpSpecSlider" min="4" max="32" value="16"
+                        step="1">
+                </div>
+                <div class="expanded-stat-chips">
+                    <div class="stat-chip">
+                        <span class="chip-label">Peak |cₙ|:</span>
+                        <span class="chip-val" id="ampModalPeakVal">—</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="chip-label">Harmonic n=</span>
+                        <span class="chip-val" id="ampModalPeakN">1</span>
+                    </div>
+                    <div class="stat-chip highlight">
+                        <span class="chip-label">DC a₀/2 =</span>
+                        <span class="chip-val" id="ampModalDC">0.000</span>
+                    </div>
+                </div>
+            </div>
+            <div class="expanded-canvas-container" id="expandedAmpCanvasWrap">
+                <canvas id="expAmpCanvas"></canvas>
+                <div class="graph-tooltip" id="ampTooltip">
+                    <div class="tooltip-title" id="ampTooltipTitle">n = 1</div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">|cₙ| (Amplitude)</span>
+                        <span class="tooltip-val" id="ampTooltipCn">0.637</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">aₙ</span>
+                        <span class="tooltip-val" id="ampTooltipAn">0.000</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">bₙ</span>
+                        <span class="tooltip-val" id="ampTooltipBn">0.000</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">Energy</span>
+                        <span class="tooltip-val" id="ampTooltipEnergy">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- EXPANDED MODAL: Phase Spectrum                                   -->
+    <!-- ================================================================ -->
+    <div class="expanded-overlay-bg" id="expandedPhaseOverlay">
+        <div class="expanded-modal-box" id="expandedPhaseBox">
+            <div class="expanded-modal-header">
+                <div class="expanded-modal-title-group">
+                    <div class="expanded-modal-icon-badge phase-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="expanded-modal-title">Phase Spectrum</div>
+                        <div class="expanded-modal-subtitle">
+                            <span class="math-expr" id="phaseModalSubtitleMath"></span>
+                            <span class="sep">•</span>
+                            <span id="phaseModalWaveLabel" style="color:var(--accent-peach);">Square Wave</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="expanded-close-btn" onclick="closeExpandedModal('phase')">×</button>
+            </div>
+            <div class="expanded-toolbar">
+                <div class="expanded-slider-wrap">
+                    <label>Spectrum Harmonics: <strong id="expPhaseSpecTermsVal"
+                            style="color:var(--accent-peach);">16</strong></label>
+                    <input type="range" class="expanded-range-slider" id="expPhaseSpecSlider" min="4" max="32"
+                        value="16" step="1">
+                </div>
+                <div class="expanded-stat-chips">
+                    <div class="stat-chip">
+                        <span class="chip-label">Dominant φ:</span>
+                        <span class="chip-val" id="phaseModalDomPhi">—°</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="chip-label">Phase range:</span>
+                        <span class="chip-val" id="phaseModalRange">±180°</span>
+                    </div>
+                    <div class="stat-chip highlight">
+                        <span class="chip-label">Non-zero φ count:</span>
+                        <span class="chip-val" id="phaseModalCount">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="expanded-canvas-container" id="expandedPhaseCanvasWrap">
+                <canvas id="expPhaseCanvas"></canvas>
+                <div class="graph-tooltip" id="phaseTooltip">
+                    <div class="tooltip-title" id="phaseTooltipTitle">n = 1</div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">Phase φₙ</span>
+                        <span class="tooltip-val" id="phaseTooltipPhi">0.000 rad</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">Degrees</span>
+                        <span class="tooltip-val" id="phaseTooltipDeg">0°</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">|cₙ|</span>
+                        <span class="tooltip-val" id="phaseTooltipCn">—</span>
+                    </div>
+                    <div class="tooltip-row">
+                        <span class="tooltip-key">aₙ / bₙ</span>
+                        <span class="tooltip-val" id="phaseTooltipABn">— / —</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- EXPANDED MODAL: Coefficient Laboratory                           -->
+    <!-- ================================================================ -->
+    <div class="expanded-overlay-bg" id="expandedCoeffOverlay">
+        <div class="expanded-modal-box" id="expandedCoeffBox">
+            <div class="expanded-modal-header">
+                <div class="expanded-modal-title-group">
+                    <div class="expanded-modal-icon-badge coeff-badge">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="expanded-modal-title">Coefficient Laboratory</div>
+                        <div class="expanded-modal-subtitle">
+                            <span id="coeffModalTabLabel">Fourier Series</span>
+                            <span class="sep">•</span>
+                            <span id="coeffModalWaveLabel" style="color:var(--accent-peach);">Square Wave</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <label class="toggle-wrap" style="gap:6px;">
+                        <span style="font-size:0.75rem;color:var(--text-dim);">Show Decimal</span>
+                        <input type="checkbox" id="expandedDecimalToggle" class="toggle-checkbox">
+                        <div class="toggle-switch"></div>
+                    </label>
+                    <button class="expanded-close-btn" onclick="closeExpandedModal('coeff')">×</button>
+                </div>
+            </div>
+            <!-- Toolbar: tabs -->
+            <div class="expanded-toolbar" style="justify-content:flex-start; gap:6px;">
+                <div class="coeff-tabs" style="background:transparent;padding:0;">
+                    <button class="tab-btn active" id="expTab-fourier" data-exptab="fourier"
+                        onclick="switchExpandedTab(this)">Fourier series</button>
+                    <button class="tab-btn" id="expTab-exponential" data-exptab="exponential"
+                        onclick="switchExpandedTab(this)">Exponential</button>
+                    <button class="tab-btn" id="expTab-half-sine" data-exptab="half-sine"
+                        onclick="switchExpandedTab(this)">Half-range sine</button>
+                    <button class="tab-btn" id="expTab-half-cosine" data-exptab="half-cosine"
+                        onclick="switchExpandedTab(this)">Half-range cosine</button>
+                </div>
+                <div style="flex:1;"></div>
+                <div class="expanded-stat-chips">
+                    <div class="stat-chip">
+                        <span class="chip-label">Terms shown:</span>
+                        <span class="chip-val" id="coeffModalTermsCount">5</span>
+                    </div>
+                    <div class="stat-chip highlight">
+                        <span class="chip-label">DC offset a₀/2:</span>
+                        <span class="chip-val" id="coeffModalDC">0.000</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Top Formula Panel: Evaluated Series & Coefficient Formulas -->
+            <div class="exp-coeff-formula-panel" id="expFormulaHero">
+                <div class="exp-main-formula" id="expMainFormulaMath">
+                    f(x) ≈ Σ [aₙ cos(2πnx) + bₙ sin(2πnx)]
+                </div>
+                <div class="exp-sub-formula" id="expSubFormulaMath">
+                    Integrated Evaluated Formulas
+                </div>
+            </div>
+
+            <!-- 2-Column Body -->
+            <div class="expanded-coeff-layout">
+                <!-- LEFT: Computed Constants Panel -->
+                <div class="expanded-coeff-left">
+                    <div class="coeff-subheading">Computed Constants</div>
+                    <div class="constants-scroll-area" id="expandedConstantsPanel">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                <!-- RIGHT: Coefficient Table -->
+                <div class="expanded-coeff-right">
+                    <div class="coeff-table-toolbar">
+                        <div class="table-title-group">
+                            <span class="coeff-subheading" id="expandedTableTitle"> Fourier Coefficients (a₁, a₂, … ·
+                                b₁, b₂, … · c₁, c₂, …)</span>
+                        </div>
+                    </div>
+                    <div class="coeff-table-scroll-wrap">
+                        <table class="coeff-detail-table" id="expandedCoeffTable">
+                            <thead id="expandedCoeffTableHead"></thead>
+                            <tbody id="expandedCoeffTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1180,12 +2361,16 @@
             'drawn': 'Drawn Waveform: f(x)'
         };
 
-        // Resize handler with devicePixelRatio support
+        // Device pixel ratio — resolved once and used everywhere
+        const dpr = window.devicePixelRatio || 1;
+
+        // Resize handler with devicePixelRatio support for crisp HiDPI rendering
         function resizeCanvases() {
             const fit = (c, context) => {
                 const rect = c.getBoundingClientRect();
-                c.width = rect.width;
-                c.height = rect.height;
+                c.width = Math.round(rect.width * dpr);
+                c.height = Math.round(rect.height * dpr);
+                context.setTransform(dpr, 0, 0, dpr, 0, 0);
             };
             fit(canvas, ctx);
             fit(ampCanvas, ampCtx);
@@ -1193,8 +2378,9 @@
             fit(gibbsCanvas, gibbsCtx);
 
             const drawRect = drawCanvas.getBoundingClientRect();
-            drawCanvas.width = drawRect.width;
-            drawCanvas.height = drawRect.height;
+            drawCanvas.width = Math.round(drawRect.width * dpr);
+            drawCanvas.height = Math.round(drawRect.height * dpr);
+            drawCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
             if (hasDrawn) renderDrawnCanvas();
         }
 
@@ -1333,8 +2519,8 @@
                         dcOffset: a0Val / 2,
                         anValue: (n) => n % 2 === 0 ? 2 * Math.pow(-1, n / 2) * besselI(n, z) : 0,
                         bnValue: (n) => n % 2 === 1 ? 2 * Math.pow(-1, (n - 1) / 2) * besselI(n, z) : 0,
-                        anMathAt: (n) => n % 2 === 0 ? `a_{${n}} = ${Math.pow(-1, n/2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `a_{${n}} = 0`,
-                        bnMathAt: (n) => n % 2 === 1 ? `b_{${n}} = ${Math.pow(-1, (n-1)/2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `b_{${n}} = 0`
+                        anMathAt: (n) => n % 2 === 0 ? `a_{${n}} = ${Math.pow(-1, n / 2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `a_{${n}} = 0`,
+                        bnMathAt: (n) => n % 2 === 1 ? `b_{${n}} = ${Math.pow(-1, (n - 1) / 2) > 0 ? '' : '-'}2 I_{${n}}(${zStr})` : `b_{${n}} = 0`
                     };
                 }
 
@@ -1647,7 +2833,8 @@
                 currentCustomSolution = sol;
 
                 if (sol && sol.isClosedForm) {
-                    newDcOffset = sol.dcOffset;
+                    // Keep dcOffset for display/coefficients but don't shift epicycle origin
+                    newDcOffset = 0;
                     for (let n = 1; n <= MAX_HARMONICS; n++) {
                         const an = sol.anValue(n);
                         const bn = sol.bnValue(n);
@@ -1666,17 +2853,22 @@
                     }
                 } else {
                     // Numerical integration directly from function (no smoothing distortion)
+                    // Subtract mean so waveform is centred (no DC shift in epicycle view)
                     const N_INT = 1024;
                     const dx = 1 / N_INT;
                     let dc = 0;
-                    const samples = new Float64Array(N_INT);
+                    const rawSamples = new Float64Array(N_INT);
                     for (let i = 0; i < N_INT; i++) {
                         const x = (i + 0.5) * dx;
-                        const y = evalCustomEquation(x);
-                        samples[i] = y;
-                        dc += y * dx;
+                        rawSamples[i] = evalCustomEquation(x);
+                        dc += rawSamples[i] * dx;
                     }
-                    newDcOffset = dc;
+                    // Centre the samples by removing the mean
+                    const samples = new Float64Array(N_INT);
+                    for (let i = 0; i < N_INT; i++) {
+                        samples[i] = rawSamples[i] - dc;
+                    }
+                    newDcOffset = 0;
                     coefficientSamples = samples;
 
                     for (let n = 1; n <= MAX_HARMONICS; n++) {
@@ -1890,23 +3082,6 @@
             const baseDcY = -dcOffset * 70 * scale;
             let y = baseDcY * (1 - morphConcentric);
 
-            // DC offset reference stem from 0-axis to epicycle origin
-            if (Math.abs(dcOffset) > 0.001) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(0, y);
-                ctx.strokeStyle = 'rgba(254, 180, 123, 0.45)';
-                ctx.setLineDash([3, 3]);
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.fill();
-                ctx.restore();
-            }
-
             const activeHarmonics = harmonics.slice(0, numTerms);
             const count = activeHarmonics.length;
             if (count === 0) return;
@@ -1958,7 +3133,7 @@
                 wave.pop();
             }
 
-            const waveStartX = Math.max(260, canvas.width * 0.42);
+            const waveStartX = Math.max(260, canvas.clientWidth * 0.42);
 
             // Only draw the wave path if we have at least 2 points to avoid NaN artefacts
             if (wave.length > 1) {
@@ -1967,7 +3142,7 @@
 
                 for (let i = 1; i < wave.length; i++) {
                     const px = waveStartX + i;
-                    if (px > canvas.width - 10) break;
+                    if (px > canvas.clientWidth - 10) break;
                     const wy = wave[i];
                     // Skip any NaN/Infinity values left over from a previous function
                     if (!isFinite(wy)) break;
@@ -2020,8 +3195,8 @@
             morphConcentric += (targetMorph - morphConcentric) * 0.08;
 
             ctx.save();
-            const originX = Math.max(120, canvas.width * 0.20);
-            ctx.translate(originX, canvas.height / 2);
+            const originX = Math.max(120, canvas.clientWidth * 0.20);
+            ctx.translate(originX, canvas.clientHeight / 2);
 
             calculateFourierSeries();
 
@@ -2142,14 +3317,11 @@
             });
         });
 
-        function updateTabFormulas() {
-            const mainF = document.getElementById('mainFormulaMath');
-            const subF = document.getElementById('subFormulaMath');
-
+        function getTabFormulasLatex(tab) {
             let mainLatex = '';
             let subLatex = '';
 
-            if (activeTab === 'fourier') {
+            if (tab === 'fourier') {
                 if (currentWaveform === 'square') {
                     mainLatex = 'f(x) = \\frac{4}{\\pi}\\sum_{n=1,3,5\\dots}^{N} \\frac{\\sin(2\\pi n x)}{n}';
                     subLatex = 'a_n = 0, \\quad b_n = \\frac{2(1 - (-1)^n)}{n\\pi} = \\frac{4}{n\\pi} \\; (n \\text{ odd})';
@@ -2174,7 +3346,7 @@
                         ? buildEvaluatedPiecewiseCoefficients('fourier')
                         : 'a_n = 2\\int_0^1 f(x)\\cos(2\\pi nx)\\,dx, \\quad b_n = 2\\int_0^1 f(x)\\sin(2\\pi nx)\\,dx';
                 }
-            } else if (activeTab === 'exponential') {
+            } else if (tab === 'exponential') {
                 if (currentWaveform === 'square') {
                     mainLatex = 'f(x) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i 2\\pi n x}, \\quad c_n = \\frac{a_n - i b_n}{2}';
                     subLatex = 'c_n = \\begin{cases} -\\frac{2i}{n\\pi}, & n \\text{ odd} \\\\ 0, & n \\text{ even} \\end{cases} \\quad (|c_n| = \\frac{2}{n\\pi})';
@@ -2193,21 +3365,45 @@
                         ? buildEvaluatedPiecewiseCoefficients('exponential')
                         : 'c_n = \\frac{a_n - i b_n}{2}, \\quad c_{-n} = c_n^* = \\frac{a_n + i b_n}{2}';
                 }
-            } else if (activeTab === 'half-sine') {
+            } else if (tab === 'half-sine') {
                 mainLatex = 'f(x) \\approx \\sum_{n=1}^{N} b_n \\sin(\\pi n x) \\quad (x \\in [0, 1])';
                 subLatex = isNumericalWaveform()
                     ? buildEvaluatedPiecewiseCoefficients('half-sine')
                     : 'b_n = 2\\int_0^1 f(x)\\sin(\\pi n x)\\,dx \\quad (\\text{Odd Extension})';
-            } else if (activeTab === 'half-cosine') {
+            } else if (tab === 'half-cosine') {
                 mainLatex = 'f(x) \\approx \\frac{a_0}{2} + \\sum_{n=1}^{N} a_n \\cos(\\pi n x) \\quad (x \\in [0, 1])';
                 subLatex = isNumericalWaveform()
                     ? buildEvaluatedPiecewiseCoefficients('half-cosine')
                     : 'a_n = 2\\int_0^1 f(x)\\cos(\\pi n x)\\,dx \\quad (\\text{Even Extension})';
             }
 
+            return { mainLatex, subLatex };
+        }
+
+        function updateTabFormulas() {
+            const mainF = document.getElementById('mainFormulaMath');
+            const subF = document.getElementById('subFormulaMath');
+            const { mainLatex, subLatex } = getTabFormulasLatex(activeTab);
+
             renderMathFormula(mainF, mainLatex, 'f(x) evaluated series');
             const showEvaluatedPiecewise = isNumericalWaveform();
             renderMathFormula(subF, subLatex, 'evaluated coefficients', showEvaluatedPiecewise);
+
+            // Also update expanded coeff modal if open or ready
+            updateExpandedTabFormulas();
+        }
+
+        function updateExpandedTabFormulas() {
+            const expMainF = document.getElementById('expMainFormulaMath');
+            const expSubF = document.getElementById('expSubFormulaMath');
+            if (!expMainF || !expSubF) return;
+
+            const tab = expandedCoeffTab || activeTab || 'fourier';
+            const { mainLatex, subLatex } = getTabFormulasLatex(tab);
+
+            renderMathFormula(expMainF, mainLatex, 'f(x) evaluated series');
+            const showEvaluatedPiecewise = isNumericalWaveform();
+            renderMathFormula(expSubF, subLatex, 'evaluated coefficients', showEvaluatedPiecewise);
         }
 
         function isNumericalWaveform() {
@@ -2260,12 +3456,17 @@
             return Math.abs(value) < 0.0005 ? 0 : Number(value.toFixed(3));
         }
 
-        // Pure JavaScript Offline LaTeX to HTML formatter
+        // Pure JavaScript Offline LaTeX to HTML formatter with textbook layout
         function latexToHtml(latex) {
             if (!latex) return '';
             let s = String(latex);
 
-            // Fractions: nested or simple \frac{a}{b}
+            // Strip display math delimiters if present
+            s = s.replace(/^\\\[|\\\]$/g, '').replace(/^\$\$|\$\$$/g, '').trim();
+
+            // Fractions: nested or simple \frac{a}{b} or \dfrac{a}{b}
+            // Normalise \dfrac to \frac so both are handled identically
+            s = s.replace(/\\dfrac/g, '\\frac');
             let prev;
             let iter = 0;
             do {
@@ -2274,27 +3475,46 @@
                 iter++;
             } while (s !== prev && iter < 6);
 
-            // Math symbols & Greek letters
-            s = s.replace(/\\pi\b/g, 'π')
-                 .replace(/\\approx\b/g, '≈')
-                 .replace(/\\ne\b/g, '≠')
-                 .replace(/\\le\b/g, '≤')
-                 .replace(/\\ge\b/g, '≥')
-                 .replace(/\\times\b/g, '×')
-                 .replace(/\\cdot\b/g, '·')
-                 .replace(/\\pm\b/g, '±')
-                 .replace(/\\infty\b/g, '∞')
-                 .replace(/\\angle\b/g, '∠')
-                 .replace(/\\circ\b/g, '°')
-                 .replace(/\\sum\b/g, '∑')
-                 .replace(/\\int\b/g, '∫')
-                 .replace(/\\operatorname\{atan2\}/g, 'atan2')
-                 .replace(/\\quad\b/g, '&emsp;')
-                 .replace(/\\qquad\b/g, '&emsp;&emsp;')
-                 .replace(/\\,|\\;|\\!/g, ' ')
-                 .replace(/\\text\{([^}]+)\}/g, '$1')
-                 .replace(/\\in\b/g, '∈')
-                 .replace(/\\dots\b/g, '…');
+            // Clean escaped percent signs
+            s = s.replace(/\\%/g, '%');
+
+            // Integrals with limits: \int_{a}^{b}, \int_a^b, or literal unicode/text ∫_a^b or ∫_{a}^{b} or \int_0^\pi
+            s = s.replace(/(?:\\int|∫)_\{([^{}]+)\}\^\{([^{}]+)\}/g, '<span class="int-block"><span class="int-sym">∫</span><span class="int-limits"><span class="int-top">$2</span><span class="int-bot">$1</span></span></span>');
+            s = s.replace(/(?:\\int|∫)_([0-9a-zA-Z\-\\+π\\pi]+)\^\{([^{}]+)\}/g, '<span class="int-block"><span class="int-sym">∫</span><span class="int-limits"><span class="int-top">$2</span><span class="int-bot">$1</span></span></span>');
+            s = s.replace(/(?:\\int|∫)_\{([^{}]+)\}\^([0-9a-zA-Z\-\\+π\\pi]+)/g, '<span class="int-block"><span class="int-sym">∫</span><span class="int-limits"><span class="int-top">$2</span><span class="int-bot">$1</span></span></span>');
+            s = s.replace(/(?:\\int|∫)_([0-9a-zA-Z\-\\+π\\pi]+)\^([0-9a-zA-Z\-\\+π\\pi]+)/g, '<span class="int-block"><span class="int-sym">∫</span><span class="int-limits"><span class="int-top">$2</span><span class="int-bot">$1</span></span></span>');
+            s = s.replace(/\\int(?![a-zA-Z])/g, '<span class="int-block"><span class="int-sym">∫</span></span>');
+
+            // Greek letters and math constants
+            s = s.replace(/\\Delta(?![a-zA-Z])|\bDelta\b/g, 'Δ')
+                .replace(/\\phi(?![a-zA-Z])/g, 'φ')
+                .replace(/\\theta(?![a-zA-Z])/g, 'θ')
+                .replace(/\\omega(?![a-zA-Z])/g, 'ω')
+                .replace(/\\pi(?![a-zA-Z])/g, 'π')
+                .replace(/\\approx(?![a-zA-Z])/g, '≈')
+                .replace(/\\ne(?![a-zA-Z])/g, '≠')
+                .replace(/\\le(?![a-zA-Z])/g, '≤')
+                .replace(/\\ge(?![a-zA-Z])/g, '≥')
+                .replace(/\\times(?![a-zA-Z])/g, '×')
+                .replace(/\\cdot(?![a-zA-Z])/g, '·')
+                .replace(/\\pm(?![a-zA-Z])/g, '±')
+                .replace(/\\infty(?![a-zA-Z])/g, '∞')
+                .replace(/\\angle(?![a-zA-Z])/g, '∠')
+                .replace(/\\circ(?![a-zA-Z])/g, '°')
+                .replace(/\\operatorname\{atan2\}|\\operatorname\{atan\}|\\atan2\b|\\atan\b|\batan2\b|\batan\b/g, 'atan')
+                .replace(/\\quad(?![a-zA-Z])/g, '\u2003')
+                .replace(/\\qquad(?![a-zA-Z])/g, '\u2003\u2003')
+                .replace(/\\,|\\;|\\!/g, ' ')
+                .replace(/\\text\{([^}]+)\}/g, '$1')
+                .replace(/\\in(?![a-zA-Z])/g, '∈')
+                .replace(/\\dots(?![a-zA-Z])/g, '…');
+
+            // Summation with limits: \sum_{...}^{...} or \sum_{...} or \sum^{...}
+            s = s.replace(/\\sum_\{([^{}]+)\}\^\{([^{}]+)\}/g, '<span class="sum-block"><span class="over">$2</span><span class="sum-sym">∑</span><span class="under">$1</span></span>');
+            s = s.replace(/\\sum\^\{([^{}]+)\}_\{([^{}]+)\}/g, '<span class="sum-block"><span class="over">$1</span><span class="sum-sym">∑</span><span class="under">$2</span></span>');
+            s = s.replace(/\\sum_\{([^{}]+)\}/g, '<span class="sum-block"><span class="sum-sym">∑</span><span class="under">$1</span></span>');
+            s = s.replace(/\\sum\^\{([^{}]+)\}/g, '<span class="sum-block"><span class="over">$1</span><span class="sum-sym">∑</span></span>');
+            s = s.replace(/\\sum(?![a-zA-Z])/g, '<span class="sum-block"><span class="sum-sym">∑</span></span>');
 
             // Environments: cases
             s = s.replace(/\\begin\{cases\}([\s\S]*?)\\end\{cases\}/g, (m, content) => {
@@ -2430,9 +3650,12 @@
                     }
 
                     item.innerHTML = `
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <span class="math-val" id="an-render-${h.n}">${latexToHtml(aStr)}</span>
-                            <span class="math-val" id="bn-render-${h.n}">${latexToHtml(bStr)}</span>
+                        <div class="cases-block" style="gap:0;">
+                            <span class="cases-brace" style="font-size:2.6em; line-height:1; color:var(--accent-purple); align-self:center;">{</span>
+                            <div class="cases-content">
+                                <span class="math-val" id="an-render-${h.n}">${latexToHtml(aStr)}</span>
+                                <span class="math-val" id="bn-render-${h.n}">${latexToHtml(bStr)}</span>
+                            </div>
                         </div>
                         <span class="approx-val" id="cn-mag-phase-${h.n}">${latexToHtml(cLatex)}</span>
                     `;
@@ -2603,15 +3826,28 @@
             drawAmplitudeSpectrum();
             drawPhaseSpectrum();
             drawGibbsPhenomenon();
+            // Refresh expanded modals if open
+            if (typeof drawExpandedAmplitude === 'function') {
+                if (document.getElementById('expandedAmpOverlay') && document.getElementById('expandedAmpOverlay').classList.contains('active')) {
+                    updateAmpStats(); drawExpandedAmplitude();
+                }
+                if (document.getElementById('expandedPhaseOverlay') && document.getElementById('expandedPhaseOverlay').classList.contains('active')) {
+                    updatePhaseStats(); drawExpandedPhase();
+                }
+                if (document.getElementById('expandedCoeffOverlay') && document.getElementById('expandedCoeffOverlay').classList.contains('active')) {
+                    renderExpandedConstantsPanel(); renderExpandedCoeffTable(expandedCoeffTab);
+                }
+            }
         }
 
         function drawAmplitudeSpectrum() {
-            const w = ampCanvas.width;
-            const h = ampCanvas.height;
+            // Use clientWidth/Height for layout (logical CSS px); actual canvas px are DPR-scaled
+            const w = ampCanvas.clientWidth;
+            const h = ampCanvas.clientHeight;
             const gridColor = isLightMode ? 'rgba(32,53,61,0.18)' : 'rgba(255,255,255,0.08)';
             const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.35)';
             const labelColor = isLightMode ? '#42575e' : '#e6e8f5';
-            ampCtx.clearRect(0, 0, w, h);
+            ampCtx.clearRect(0, 0, ampCanvas.width, ampCanvas.height);
 
             const K = spectrumTerms;
             const padLeft = 30;
@@ -2694,12 +3930,13 @@
         }
 
         function drawPhaseSpectrum() {
-            const w = phaseCanvas.width;
-            const h = phaseCanvas.height;
+            // Use clientWidth/Height for layout (logical CSS px); actual canvas px are DPR-scaled
+            const w = phaseCanvas.clientWidth;
+            const h = phaseCanvas.clientHeight;
             const gridColor = isLightMode ? 'rgba(32,53,61,0.18)' : 'rgba(255,255,255,0.08)';
             const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.35)';
             const labelColor = isLightMode ? '#42575e' : '#e6e8f5';
-            phaseCtx.clearRect(0, 0, w, h);
+            phaseCtx.clearRect(0, 0, phaseCanvas.width, phaseCanvas.height);
 
             const K = spectrumTerms;
             const padLeft = 30;
@@ -2791,42 +4028,122 @@
             const pctElem = document.getElementById('overshootPct');
             const formulaBox = document.getElementById('gibbsFormulaBox');
 
-            const hasDiscontinuity = ['square', 'sawtooth', 'pulse'].includes(currentWaveform);
+            // 1. Determine or detect if the waveform has jump discontinuities
+            let hasDiscontinuity = false;
+            let jumpSize = 0;
+            let jumpLocation = 0; // x in [0, 1]
+            let leftVal = 0, rightVal = 0;
 
-            if (hasDiscontinuity) {
-                let peak = 0;
-                const active = harmonics.slice(0, numTerms);
-                for (let i = 0; i <= 200; i++) {
-                    const x = i * (0.2 / 200);
-                    let val = dcOffset;
-                    active.forEach(h => {
-                        val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
-                    });
-                    if (val > peak) peak = val;
+            if (currentWaveform === 'square') {
+                hasDiscontinuity = true;
+                jumpSize = 2.0; // from -1 to +1 at x=0
+                jumpLocation = 0;
+                leftVal = -1; rightVal = 1;
+            } else if (currentWaveform === 'sawtooth') {
+                hasDiscontinuity = true;
+                jumpSize = 2.0; // from +1 to -1 at x=0/1
+                jumpLocation = 0;
+                leftVal = 1; rightVal = -1;
+            } else if (currentWaveform === 'pulse') {
+                hasDiscontinuity = true;
+                jumpSize = 2.0;
+                jumpLocation = 0;
+                leftVal = -1; rightVal = 1;
+            } else if (currentWaveform === 'sine' || currentWaveform === 'triangle') {
+                hasDiscontinuity = false;
+            } else {
+                // For custom and drawn waveforms: scan high-resolution samples to detect jumps
+                const N_SCAN = 1024;
+                const scanSamples = new Float64Array(N_SCAN);
+                for (let i = 0; i < N_SCAN; i++) {
+                    const x = i / N_SCAN;
+                    scanSamples[i] = currentWaveform === 'custom'
+                        ? evalCustomEquation(x)
+                        : (coefficientSamples ? coefficientSamples[i] : (hasDrawn ? drawnPoints[i] : 0));
                 }
-                const pct = Math.max(0, ((peak - 1.0) / 1.0) * 100).toFixed(2);
-                badge.textContent = `+${pct}%`;
-                pctElem.textContent = `${pct}% (Limit: 8.95%)`;
-                renderMathFormula(formulaBox, '\\Delta = \\frac{1}{\\pi}\\int_0^\\pi \\frac{\\sin t}{t}dt - \\frac{1}{2} \\approx 8.949\\%', 'Δ = (1/π) ∫₀^π (sin t / t) dt - 1/2 ≈ 8.949%');
+
+                // Check for step jump across consecutive points and boundary wrap (x=0 vs x=1)
+                let maxJump = 0;
+                let maxJumpIdx = 0;
+                let maxLeft = 0, maxRight = 0;
+                const diffThreshold = 0.35; // Step jump threshold
+
+                for (let i = 0; i < N_SCAN; i++) {
+                    const nextIdx = (i + 1) % N_SCAN;
+                    const diff = Math.abs(scanSamples[nextIdx] - scanSamples[i]);
+                    if (diff > maxJump) {
+                        maxJump = diff;
+                        maxJumpIdx = i;
+                        maxLeft = scanSamples[i];
+                        maxRight = scanSamples[nextIdx];
+                    }
+                }
+
+                if (maxJump >= diffThreshold) {
+                    hasDiscontinuity = true;
+                    jumpSize = maxJump;
+                    jumpLocation = (maxJumpIdx + 0.5) / N_SCAN;
+                    leftVal = maxLeft;
+                    rightVal = maxRight;
+                }
+            }
+
+            const active = harmonics.slice(0, numTerms);
+
+            if (hasDiscontinuity && jumpSize > 0.05) {
+                // Evaluate Fourier series synthesis near the jump to calculate actual peak overshoot
+                let maxOvershoot = 0;
+                const targetPlateau = Math.max(leftVal, rightVal);
+                const step = 0.25 / Math.max(numTerms, 1); // window size scaled by harmonic count
+                const numEval = 300;
+
+                for (let i = 0; i <= numEval; i++) {
+                    const x = ((jumpLocation + (i / numEval) * step) % 1 + 1) % 1;
+                    let val = dcOffset;
+                    for (let h of active) {
+                        val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
+                    }
+                    const overshoot = val - targetPlateau;
+                    if (overshoot > maxOvershoot) maxOvershoot = overshoot;
+                }
+
+                // Calculate overshoot as percentage of half the jump height (Wilbraham-Gibbs definition)
+                const halfJump = Math.max(jumpSize / 2, 0.001);
+                let pct = (maxOvershoot / halfJump) * 100;
+                if (!isFinite(pct) || pct < 0) pct = 0;
+                // Cap displayed overshoot reasonably for high-order finite sum
+                const pctStr = pct.toFixed(2);
+
+                badge.textContent = `+${pctStr}%`;
+                pctElem.textContent = `${pctStr}% (Limit: 8.95%)`;
+                const gibbsLatex = '\\Delta = \\dfrac{1}{\\pi}\\int_0^{\\pi} \\dfrac{\\sin t}{t}\\,dt - \\dfrac{1}{2}';
+                if (window.katex) {
+                    try { katex.render(gibbsLatex, formulaBox, { throwOnError: false, displayMode: false }); }
+                    catch(e) { formulaBox.innerHTML = latexToHtml(gibbsLatex); }
+                } else {
+                    formulaBox.innerHTML = latexToHtml(gibbsLatex);
+                }
             } else {
                 badge.textContent = `0.00%`;
-                pctElem.textContent = `0.00% (Smooth wave)`;
+                pctElem.textContent = `0.00% (Continuous wave)`;
                 formulaBox.textContent = 'Continuous signal (No Gibbs ripple)';
             }
 
-            const gw = gibbsCanvas.width;
-            const gh = gibbsCanvas.height;
-            gibbsCtx.clearRect(0, 0, gw, gh);
-            const active = harmonics.slice(0, numTerms);
+            const gw = gibbsCanvas.clientWidth;
+            const gh = gibbsCanvas.clientHeight;
+            gibbsCtx.clearRect(0, 0, gibbsCanvas.width, gibbsCanvas.height);
             const values = new Float64Array(gw);
             let minValue = Infinity;
             let maxValue = -Infinity;
+            const focusCenter = hasDiscontinuity ? jumpLocation : 0;
+            const focusSpan = 0.28;
+
             for (let px = 0; px < gw; px++) {
-                const x = (px / gw) * 0.28;
+                const x = ((focusCenter + (px / gw) * focusSpan) % 1 + 1) % 1;
                 let val = dcOffset;
-                active.forEach(h => {
+                for (let h of active) {
                     val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
-                });
+                }
                 values[px] = val;
                 minValue = Math.min(minValue, val);
                 maxValue = Math.max(maxValue, val);
@@ -3020,9 +4337,10 @@
         }
 
         function renderDrawnCanvas() {
-            const w = drawCanvas.width;
-            const h = drawCanvas.height;
-            drawCtx.clearRect(0, 0, w, h);
+            // Use clientWidth/Height for layout (logical CSS px); actual canvas px are DPR-scaled
+            const w = drawCanvas.clientWidth;
+            const h = drawCanvas.clientHeight;
+            drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
             drawCtx.strokeStyle = 'rgba(255,255,255,0.15)';
             drawCtx.lineWidth = 1;
@@ -3053,12 +4371,818 @@
             resizeCanvases();
             initThumbnails();
             setupDrawModal();
+            setupExpandedModals();
             computeFourierSeries();
             updateCoefficientsList();
             updateTabFormulas();
             updateBottomPanels();
             animate();
+
+            // Phase subtitle — direct HTML, no KaTeX dependency needed
+            const phaseHtml = '<i>\u03c6</i><sub>n</sub>\u2009=\u2009tan<sup>\u22121</sup>\u2009<span class="frac" style="font-size:0.9em;"><span class="num">\u2212<i>b</i><sub>n</sub></span><span class="den"><i>a</i><sub>n</sub></span></span>';
+            const ps = document.getElementById('phaseSubtitleMath');
+            const pm = document.getElementById('phaseModalSubtitleMath');
+            if (ps) ps.innerHTML = phaseHtml;
+            if (pm) pm.innerHTML = phaseHtml;
+
+            // Render Gibbs formula using KaTeX (inline with dfrac for proper size)
+            const gibbsElem = document.getElementById('gibbsFormulaBox');
+            if (gibbsElem) {
+                const gibbsLatex = '\\Delta = \\dfrac{1}{\\pi}\\int_0^{\\pi} \\dfrac{\\sin t}{t}\\,dt - \\dfrac{1}{2} \\approx 8.949\\%';
+                if (window.katex) {
+                    try { katex.render(gibbsLatex, gibbsElem, { throwOnError: false, displayMode: false }); }
+                    catch(e) { gibbsElem.innerHTML = latexToHtml(gibbsLatex); }
+                } else {
+                    gibbsElem.innerHTML = latexToHtml(gibbsLatex);
+                }
+            }
         });
+
+        // ============================================================
+        // EXPANDED PANEL MODALS: Amplitude, Phase, Coefficient Lab
+        // ============================================================
+
+        const expAmpCanvas = document.getElementById('expAmpCanvas');
+        const expAmpCtx = expAmpCanvas.getContext('2d');
+        const expPhaseCanvas = document.getElementById('expPhaseCanvas');
+        const expPhaseCtx = expPhaseCanvas.getContext('2d');
+
+        let expAmpTerms = 16;
+        let expPhaseTerms = 16;
+        let expandedCoeffTab = 'fourier';
+        let expandedShowDecimal = false;
+
+        // Harmonic bar hit info for hover
+        let ampBarHitZones = [];  // { x, y, w, h, idx }
+        let phaseBarHitZones = [];
+
+        function setupExpandedModals() {
+            // ---- Panel click delegates ----
+            document.getElementById('ampPanel').addEventListener('click', (e) => {
+                if (!e.target.closest('.panel-expand-btn')) openExpandedModal('amp');
+            });
+            document.getElementById('phasePanel').addEventListener('click', (e) => {
+                if (!e.target.closest('.panel-expand-btn')) openExpandedModal('phase');
+            });
+            document.getElementById('coeffCard').addEventListener('click', (e) => {
+                if (!e.target.closest('.panel-expand-btn') && !e.target.closest('button') && !e.target.closest('input')) {
+                    openExpandedModal('coeff');
+                }
+            });
+
+            // Overlay click to close
+            document.getElementById('expandedAmpOverlay').addEventListener('click', function (e) {
+                if (e.target === this) closeExpandedModal('amp');
+            });
+            document.getElementById('expandedPhaseOverlay').addEventListener('click', function (e) {
+                if (e.target === this) closeExpandedModal('phase');
+            });
+            document.getElementById('expandedCoeffOverlay').addEventListener('click', function (e) {
+                if (e.target === this) closeExpandedModal('coeff');
+            });
+
+            // ESC key to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeExpandedModal('amp');
+                    closeExpandedModal('phase');
+                    closeExpandedModal('coeff');
+                }
+            });
+
+            // ---- Amplitude expanded slider ----
+            const expAmpSlider = document.getElementById('expAmpSpecSlider');
+            expAmpSlider.addEventListener('input', () => {
+                expAmpTerms = parseInt(expAmpSlider.value);
+                // Sync main slider too
+                spectrumTermsSlider.value = expAmpTerms;
+                spectrumTerms = expAmpTerms;
+                specTermsVal.textContent = expAmpTerms;
+                document.getElementById('expAmpSpecTermsVal').textContent = expAmpTerms;
+                drawAmplitudeSpectrum();
+                drawExpandedAmplitude();
+            });
+
+            // ---- Phase expanded slider ----
+            const expPhaseSlider = document.getElementById('expPhaseSpecSlider');
+            expPhaseSlider.addEventListener('input', () => {
+                expPhaseTerms = parseInt(expPhaseSlider.value);
+                // Sync main slider too
+                spectrumTermsSlider.value = expPhaseTerms;
+                spectrumTerms = expPhaseTerms;
+                specTermsVal.textContent = expPhaseTerms;
+                document.getElementById('expPhaseSpecTermsVal').textContent = expPhaseTerms;
+                drawPhaseSpectrum();
+                drawExpandedPhase();
+            });
+
+            // Also sync main spectrum slider -> expanded sliders
+            spectrumTermsSlider.addEventListener('input', () => {
+                expAmpTerms = spectrumTerms;
+                expPhaseTerms = spectrumTerms;
+                document.getElementById('expAmpSpecSlider').value = spectrumTerms;
+                document.getElementById('expPhaseSpecSlider').value = spectrumTerms;
+                document.getElementById('expAmpSpecTermsVal').textContent = spectrumTerms;
+                document.getElementById('expPhaseSpecTermsVal').textContent = spectrumTerms;
+                if (document.getElementById('expandedAmpOverlay').classList.contains('active')) drawExpandedAmplitude();
+                if (document.getElementById('expandedPhaseOverlay').classList.contains('active')) drawExpandedPhase();
+            }, { capture: true });
+
+            // ---- Expanded Decimal Toggle (coeff modal) ----
+            document.getElementById('expandedDecimalToggle').addEventListener('change', (e) => {
+                expandedShowDecimal = e.target.checked;
+                // Sync with main toggle
+                decimalToggle.checked = expandedShowDecimal;
+                showDecimal = expandedShowDecimal;
+                updateCoefficientsList();
+                renderExpandedCoeffTable(expandedCoeffTab);
+            });
+            // Sync main decimal toggle -> expanded
+            decimalToggle.addEventListener('change', (e) => {
+                expandedShowDecimal = e.target.checked;
+                document.getElementById('expandedDecimalToggle').checked = expandedShowDecimal;
+                renderExpandedCoeffTable(expandedCoeffTab);
+            });
+
+            // ---- Mouse hover for amplitude expanded canvas ----
+            const ampWrap = document.getElementById('expandedAmpCanvasWrap');
+            const ampTip = document.getElementById('ampTooltip');
+            expAmpCanvas.addEventListener('mousemove', (e) => {
+                const rect = expAmpCanvas.getBoundingClientRect();
+                // Zones are stored in logical (CSS) px — mouse coords are already logical px
+                const mx = e.clientX - rect.left;
+                let found = null;
+                for (const zone of ampBarHitZones) {
+                    if (mx >= zone.left && mx < zone.right) {
+                        found = zone;
+                        break;
+                    }
+                }
+                if (found) {
+                    const h = harmonics[found.idx];
+                    const totalEnergy = harmonics.slice(0, expAmpTerms).reduce((s, hh) => s + hh.cn * hh.cn, 0);
+                    const energyPct = totalEnergy > 0 ? (h.cn * h.cn / totalEnergy * 100).toFixed(1) : '0.0';
+                    document.getElementById('ampTooltipTitle').textContent = `Harmonic  n = ${h.n}`;
+                    document.getElementById('ampTooltipCn').textContent = h.cn.toFixed(4);
+                    document.getElementById('ampTooltipAn').textContent = h.an.toFixed(4);
+                    document.getElementById('ampTooltipBn').textContent = h.bn.toFixed(4);
+                    document.getElementById('ampTooltipEnergy').textContent = energyPct + '%';
+                    // Position tooltip
+                    const tipX = Math.min(e.clientX - rect.left + 14, expAmpCanvas.clientWidth - 180);
+                    const tipY = Math.max(e.clientY - rect.top - 60, 4);
+                    ampTip.style.left = tipX + 'px';
+                    ampTip.style.top = tipY + 'px';
+                    ampTip.classList.add('visible');
+                } else {
+                    ampTip.classList.remove('visible');
+                }
+            });
+            expAmpCanvas.addEventListener('mouseleave', () => ampTip.classList.remove('visible'));
+
+            // ---- Mouse hover for phase expanded canvas ----
+            const phaseTip = document.getElementById('phaseTooltip');
+            expPhaseCanvas.addEventListener('mousemove', (e) => {
+                const rect = expPhaseCanvas.getBoundingClientRect();
+                // Zones are stored in logical (CSS) px — mouse coords are already logical px
+                const mx = e.clientX - rect.left;
+                let found = null;
+                for (const zone of phaseBarHitZones) {
+                    if (mx >= zone.left && mx < zone.right) {
+                        found = zone;
+                        break;
+                    }
+                }
+                if (found) {
+                    const h = harmonics[found.idx];
+                    const phi = h.cn > 0.02 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    document.getElementById('phaseTooltipTitle').textContent = `Harmonic  n = ${h.n}`;
+                    document.getElementById('phaseTooltipPhi').textContent = phi.toFixed(4) + ' rad';
+                    document.getElementById('phaseTooltipDeg').textContent = deg + '°';
+                    document.getElementById('phaseTooltipCn').textContent = h.cn.toFixed(4);
+                    document.getElementById('phaseTooltipABn').textContent = h.an.toFixed(3) + ' / ' + h.bn.toFixed(3);
+                    const tipX = Math.min(e.clientX - rect.left + 14, expPhaseCanvas.clientWidth - 180);
+                    const tipY = Math.max(e.clientY - rect.top - 80, 4);
+                    phaseTip.style.left = tipX + 'px';
+                    phaseTip.style.top = tipY + 'px';
+                    phaseTip.classList.add('visible');
+                } else {
+                    phaseTip.classList.remove('visible');
+                }
+            });
+            expPhaseCanvas.addEventListener('mouseleave', () => phaseTip.classList.remove('visible'));
+        }
+
+        // ---- Open / close expanded modal ----
+        function openExpandedModal(type) {
+            const presetTitleMap = {
+                'square': 'Square Wave', 'sine': 'Sine Wave', 'triangle': 'Triangle Wave',
+                'sawtooth': 'Sawtooth Wave', 'pulse': 'Pulse Train', 'custom': 'Custom Equation',
+                'drawn': 'Drawn Waveform'
+            };
+            const waveLabel = presetTitleMap[currentWaveform] || 'Custom';
+
+            if (type === 'amp') {
+                const overlay = document.getElementById('expandedAmpOverlay');
+                const box = document.getElementById('expandedAmpBox');
+                document.getElementById('ampModalWaveLabel').textContent = waveLabel;
+                expAmpTerms = spectrumTerms;
+                document.getElementById('expAmpSpecSlider').value = expAmpTerms;
+                document.getElementById('expAmpSpecTermsVal').textContent = expAmpTerms;
+                overlay.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    overlay.classList.add('active');
+                    box.classList.add('active');
+                    fitExpandedCanvas(expAmpCanvas, expAmpCtx);
+                    updateAmpStats();
+                    drawExpandedAmplitude();
+                });
+
+            } else if (type === 'phase') {
+                const overlay = document.getElementById('expandedPhaseOverlay');
+                const box = document.getElementById('expandedPhaseBox');
+                document.getElementById('phaseModalWaveLabel').textContent = waveLabel;
+                expPhaseTerms = spectrumTerms;
+                document.getElementById('expPhaseSpecSlider').value = expPhaseTerms;
+                document.getElementById('expPhaseSpecTermsVal').textContent = expPhaseTerms;
+                overlay.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    overlay.classList.add('active');
+                    box.classList.add('active');
+                    fitExpandedCanvas(expPhaseCanvas, expPhaseCtx);
+                    updatePhaseStats();
+                    drawExpandedPhase();
+                });
+
+            } else if (type === 'coeff') {
+                const overlay = document.getElementById('expandedCoeffOverlay');
+                const box = document.getElementById('expandedCoeffBox');
+                document.getElementById('coeffModalWaveLabel').textContent = waveLabel;
+                document.getElementById('coeffModalTermsCount').textContent = numTerms;
+                document.getElementById('coeffModalDC').textContent = dcOffset.toFixed(3);
+                document.getElementById('expandedDecimalToggle').checked = showDecimal;
+                expandedShowDecimal = showDecimal;
+                expandedCoeffTab = activeTab;
+                // Sync active tab button
+                document.querySelectorAll('[data-exptab]').forEach(b => {
+                    b.classList.toggle('active', b.dataset.exptab === expandedCoeffTab);
+                });
+                overlay.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    overlay.classList.add('active');
+                    box.classList.add('active');
+                    renderExpandedConstantsPanel();
+                    renderExpandedCoeffTable(expandedCoeffTab);
+                });
+            }
+        }
+
+        function closeExpandedModal(type) {
+            const ids = {
+                amp: ['expandedAmpOverlay', 'expandedAmpBox'],
+                phase: ['expandedPhaseOverlay', 'expandedPhaseBox'],
+                coeff: ['expandedCoeffOverlay', 'expandedCoeffBox']
+            };
+            const [overlayId, boxId] = ids[type];
+            const overlay = document.getElementById(overlayId);
+            const box = document.getElementById(boxId);
+            if (!overlay || !overlay.classList.contains('active')) return;
+            box.classList.remove('active');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400);
+        }
+
+        function fitExpandedCanvas(cvs, context) {
+            const rect = cvs.parentElement.getBoundingClientRect();
+            cvs.width = Math.round(rect.width * dpr);
+            cvs.height = Math.round(rect.height * dpr);
+            context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        // ---- Amplitude Expanded Drawing ----
+        function updateAmpStats() {
+            let peakCn = 0, peakN = 1;
+            for (let i = 0; i < expAmpTerms && i < harmonics.length; i++) {
+                if (harmonics[i].cn > peakCn) { peakCn = harmonics[i].cn; peakN = harmonics[i].n; }
+            }
+            document.getElementById('ampModalPeakVal').textContent = peakCn.toFixed(4);
+            document.getElementById('ampModalPeakN').textContent = peakN;
+            document.getElementById('ampModalDC').textContent = dcOffset.toFixed(3);
+        }
+
+        function drawExpandedAmplitude() {
+            const cvs = expAmpCanvas;
+            const ctx2 = expAmpCtx;
+            // Use clientWidth/Height (logical CSS px) for layout; cvs.width/height are physical px
+            const w = cvs.clientWidth, h = cvs.clientHeight;
+            if (!w || !h) return;
+            const gridColor = isLightMode ? 'rgba(32,53,61,0.15)' : 'rgba(255,255,255,0.07)';
+            const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.28)';
+            ctx2.clearRect(0, 0, cvs.width, cvs.height);
+
+            const K = expAmpTerms;
+            const padLeft = 52, padRight = 20, padTop = 18, padBottom = 40;
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+
+            let maxAmp = 0.05;
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                if (harmonics[i].cn > maxAmp) maxAmp = harmonics[i].cn;
+            }
+            const niceMax = Math.max(0.5, Math.ceil(maxAmp * 1.2 * 4) / 4);
+
+            // Gridlines & Y labels
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            const numGridLines = 5;
+            for (let g = 0; g <= numGridLines; g++) {
+                const frac = g / numGridLines;
+                const yy = padTop + plotH * (1 - frac);
+                const val = (niceMax * frac);
+                ctx2.strokeStyle = g === 0 ? axisColor : gridColor;
+                ctx2.lineWidth = g === 0 ? 1.5 : 1;
+                ctx2.setLineDash(g === 0 ? [] : [4, 4]);
+                ctx2.beginPath();
+                ctx2.moveTo(padLeft, yy);
+                ctx2.lineTo(w - padRight, yy);
+                ctx2.stroke();
+                ctx2.setLineDash([]);
+                ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+                ctx2.textAlign = 'right';
+                ctx2.textBaseline = 'middle';
+                ctx2.fillText(val.toFixed(val < 0.1 ? 3 : val < 1 ? 2 : 1), padLeft - 6, yy);
+            }
+
+            // Y axis label
+            ctx2.save();
+            ctx2.translate(13, padTop + plotH / 2);
+            ctx2.rotate(-Math.PI / 2);
+            ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+            ctx2.textAlign = 'center';
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            ctx2.fillText('|cₙ| Amplitude', 0, 0);
+            ctx2.restore();
+
+            // X axis
+            ctx2.strokeStyle = axisColor;
+            ctx2.lineWidth = 1.5;
+            ctx2.beginPath();
+            ctx2.moveTo(padLeft, padTop + plotH);
+            ctx2.lineTo(w - padRight, padTop + plotH);
+            ctx2.stroke();
+
+            // Bars
+            ampBarHitZones = [];
+            const barW = Math.max(6, plotW / K - 4);
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                const hm = harmonics[i];
+                const bx = padLeft + i * (plotW / K) + (plotW / K - barW) / 2;
+                const amp = hm.cn;
+                const bh = (amp / niceMax) * plotH;
+                const by = padTop + plotH - bh;
+
+                // Gradient bar
+                const grad = ctx2.createLinearGradient(bx, by, bx, padTop + plotH);
+                grad.addColorStop(0, isLightMode ? '#1a87d1' : '#4facfe');
+                grad.addColorStop(0.6, isLightMode ? '#0ab4d4' : '#00c6fb');
+                grad.addColorStop(1, isLightMode ? '#8ee4f4' : '#00f2fe55');
+                ctx2.fillStyle = grad;
+                ctx2.beginPath();
+                ctx2.roundRect ? ctx2.roundRect(bx, by, barW, bh, [3, 3, 0, 0]) : ctx2.rect(bx, by, barW, bh);
+                ctx2.fill();
+
+                // Top glow line
+                ctx2.strokeStyle = isLightMode ? '#29a8e0' : '#7dd3fc';
+                ctx2.lineWidth = 1.5;
+                ctx2.beginPath();
+                ctx2.moveTo(bx, by);
+                ctx2.lineTo(bx + barW, by);
+                ctx2.stroke();
+
+                // Store hit zone — left/right are midpoints between adjacent stems (canvas px)
+                const colW = plotW / K;
+                ampBarHitZones.push({
+                    left: padLeft + i * colW,
+                    right: padLeft + (i + 1) * colW,
+                    idx: i
+                });
+
+                // X label
+                const showLabel = K <= 20 || (i + 1) % 2 !== 0;
+                if (showLabel) {
+                    ctx2.fillStyle = isLightMode ? '#42575e' : '#c8cde3';
+                    ctx2.textAlign = 'center';
+                    ctx2.textBaseline = 'top';
+                    ctx2.font = `${K > 24 ? 9 : 10}px monospace`;
+                    ctx2.fillText(hm.n, bx + barW / 2, padTop + plotH + 6);
+                }
+            }
+
+            // X axis title
+            ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'bottom';
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            ctx2.fillText('Harmonic n', padLeft + plotW / 2, h - 2);
+
+            updateAmpStats();
+        }
+
+        // ---- Phase Expanded Drawing ----
+        function updatePhaseStats() {
+            let domPhi = 0, domCn = 0, nonZeroCount = 0;
+            for (let i = 0; i < expPhaseTerms && i < harmonics.length; i++) {
+                const h = harmonics[i];
+                if (h.cn > 0.02) {
+                    nonZeroCount++;
+                    const phi = Math.atan2(-h.bn, h.an);
+                    if (h.cn > domCn) { domCn = h.cn; domPhi = phi; }
+                }
+            }
+            document.getElementById('phaseModalDomPhi').textContent = Math.round(domPhi * 180 / Math.PI) + '°';
+            document.getElementById('phaseModalRange').textContent = '±180°';
+            document.getElementById('phaseModalCount').textContent = nonZeroCount;
+        }
+
+        function drawExpandedPhase() {
+            const cvs = expPhaseCanvas;
+            const ctx2 = expPhaseCtx;
+            // Use clientWidth/Height (logical CSS px) for layout; cvs.width/height are physical px
+            const w = cvs.clientWidth, h = cvs.clientHeight;
+            if (!w || !h) return;
+            const gridColor = isLightMode ? 'rgba(32,53,61,0.15)' : 'rgba(255,255,255,0.07)';
+            const axisColor = isLightMode ? 'rgba(32,53,61,0.35)' : 'rgba(255,255,255,0.28)';
+            ctx2.clearRect(0, 0, cvs.width, cvs.height);
+
+            const K = expPhaseTerms;
+            const padLeft = 54, padRight = 20, padTop = 18, padBottom = 40;
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+            const centerY = padTop + plotH / 2;
+
+            // Phase gridlines
+            const phaseTicks = [
+                { frac: 1.0, label: '+π', val: Math.PI },
+                { frac: 0.5, label: '+π/2' },
+                { frac: 0.0, label: '0' },
+                { frac: -0.5, label: '−π/2' },
+                { frac: -1.0, label: '−π', val: -Math.PI }
+            ];
+
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx2.textAlign = 'right';
+            ctx2.textBaseline = 'middle';
+            phaseTicks.forEach(tick => {
+                const yy = centerY - tick.frac * (plotH / 2);
+                ctx2.strokeStyle = tick.frac === 0 ? axisColor : gridColor;
+                ctx2.lineWidth = tick.frac === 0 ? 1.5 : 1;
+                ctx2.setLineDash(tick.frac === 0 ? [] : [4, 4]);
+                ctx2.beginPath();
+                ctx2.moveTo(padLeft, yy);
+                ctx2.lineTo(w - padRight, yy);
+                ctx2.stroke();
+                ctx2.setLineDash([]);
+                ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+                ctx2.fillText(tick.label, padLeft - 6, yy);
+            });
+
+            // Y axis label
+            ctx2.save();
+            ctx2.translate(13, padTop + plotH / 2);
+            ctx2.rotate(-Math.PI / 2);
+            ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+            ctx2.textAlign = 'center';
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            ctx2.fillText('Phase φₙ (radians)', 0, 0);
+            ctx2.restore();
+
+            // Bottom axis
+            ctx2.strokeStyle = axisColor;
+            ctx2.lineWidth = 1.5;
+            ctx2.beginPath();
+            ctx2.moveTo(padLeft, padTop + plotH);
+            ctx2.lineTo(w - padRight, padTop + plotH);
+            ctx2.stroke();
+
+            phaseBarHitZones = [];
+            const bandwidth = plotW / K;
+            for (let i = 0; i < K && i < harmonics.length; i++) {
+                const hm = harmonics[i];
+                const x = padLeft + i * bandwidth + bandwidth / 2;
+                const phi = hm.cn > 0.02 ? Math.atan2(-hm.bn, hm.an) : 0;
+                const y = centerY - (phi / Math.PI) * (plotH / 2);
+
+                // Stem
+                ctx2.strokeStyle = isLightMode ? 'rgba(0, 157, 104, 0.8)' : 'rgba(56, 239, 125, 0.8)';
+                ctx2.lineWidth = 2;
+                ctx2.beginPath();
+                ctx2.moveTo(x, centerY);
+                ctx2.lineTo(x, y);
+                ctx2.stroke();
+
+                // Dot head with glow
+                const dotGrad = ctx2.createRadialGradient(x, y, 0, x, y, 8);
+                dotGrad.addColorStop(0, isLightMode ? '#00c47a' : '#38ef7d');
+                dotGrad.addColorStop(1, 'rgba(56, 239, 125, 0)');
+                ctx2.fillStyle = dotGrad;
+                ctx2.beginPath();
+                ctx2.arc(x, y, 7, 0, 2 * Math.PI);
+                ctx2.fill();
+                ctx2.fillStyle = isLightMode ? '#00c47a' : '#38ef7d';
+                ctx2.beginPath();
+                ctx2.arc(x, y, 3.5, 0, 2 * Math.PI);
+                ctx2.fill();
+
+                // Store hit zone — left/right are midpoints between adjacent stems (canvas px)
+                phaseBarHitZones.push({
+                    left: padLeft + i * bandwidth,
+                    right: padLeft + (i + 1) * bandwidth,
+                    idx: i
+                });
+
+                const showLabel = K <= 20 || (i + 1) % 2 !== 0;
+                if (showLabel) {
+                    ctx2.fillStyle = isLightMode ? '#42575e' : '#c8cde3';
+                    ctx2.textAlign = 'center';
+                    ctx2.textBaseline = 'top';
+                    ctx2.font = `${K > 24 ? 9 : 10}px monospace`;
+                    ctx2.fillText(hm.n, x, padTop + plotH + 6);
+                }
+            }
+
+            // X axis title
+            ctx2.fillStyle = isLightMode ? '#62777d' : '#9aa0c2';
+            ctx2.textAlign = 'center';
+            ctx2.textBaseline = 'bottom';
+            ctx2.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+            ctx2.fillText('Harmonic n', padLeft + plotW / 2, h - 2);
+
+            updatePhaseStats();
+        }
+
+        // ---- Coefficient Lab Expanded ----
+        function switchExpandedTab(btn) {
+            document.querySelectorAll('[data-exptab]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            expandedCoeffTab = btn.dataset.exptab;
+            document.getElementById('coeffModalTabLabel').textContent = btn.textContent;
+            updateExpandedTabFormulas();
+            renderExpandedConstantsPanel();
+            renderExpandedCoeffTable(expandedCoeffTab);
+        }
+
+        function renderExpandedConstantsPanel() {
+            updateExpandedTabFormulas();
+            const panel = document.getElementById('expandedConstantsPanel');
+            panel.innerHTML = '';
+
+            const waveNames = { square: 'Square Wave', sine: 'Sine Wave', triangle: 'Triangle Wave', sawtooth: 'Sawtooth Wave', pulse: 'Pulse Train', custom: 'Custom', drawn: 'Drawn' };
+            const waveName = waveNames[currentWaveform] || 'Unknown';
+
+            // --- Card 1: Series Info ---
+            const infoCard = document.createElement('div');
+            infoCard.className = 'constant-card';
+            infoCard.innerHTML = `
+                <div class="constant-card-header">
+                    <span class="constant-title">Series Configuration</span>
+                    <span class="constant-badge">${expandedCoeffTab}</span>
+                </div>
+                <div class="constant-grid">
+                    <div class="constant-item"><span class="c-key">Waveform</span><span class="c-val" style="color:var(--accent-peach)">${waveName}</span></div>
+                    <div class="constant-item"><span class="c-key">Active Terms (N)</span><span class="c-val">${numTerms}</span></div>
+                    <div class="constant-item"><span class="c-key">DC Offset (a₀/2)</span><span class="c-val" style="color:var(--accent-blue)">${dcOffset.toFixed(4)}</span></div>
+                    <div class="constant-item"><span class="c-key">Period T</span><span class="c-val">1</span></div>
+                </div>
+            `;
+            panel.appendChild(infoCard);
+
+            // --- Card 2: Energy & Convergence ---
+            const displayHarmonics = harmonics.slice(0, numTerms);
+            const totalEnergy = displayHarmonics.reduce((s, h) => s + h.cn * h.cn, 0);
+            const fundamentalEnergy = harmonics.length > 0 ? harmonics[0].cn * harmonics[0].cn : 0;
+            const energyRatio = totalEnergy > 0 ? (fundamentalEnergy / totalEnergy * 100).toFixed(1) : '0.0';
+            const peakCn = displayHarmonics.length > 0 ? Math.max(...displayHarmonics.map(h => h.cn)) : 0;
+            const rmsAmplitude = Math.sqrt(totalEnergy / Math.max(numTerms, 1));
+
+            const energyCard = document.createElement('div');
+            energyCard.className = 'constant-card';
+            energyCard.innerHTML = `
+                <div class="constant-card-header">
+                    <span class="constant-title">Energy Distribution</span>
+                    <span class="constant-badge">Parseval</span>
+                </div>
+                <div class="constant-grid">
+                    <div class="constant-item"><span class="c-key">Σ|cₙ|² (N terms)</span><span class="c-val" style="color:var(--accent-cyan)">${totalEnergy.toFixed(4)}</span></div>
+                    <div class="constant-item"><span class="c-key">Peak |cₙ|</span><span class="c-val">${peakCn.toFixed(4)}</span></div>
+                    <div class="constant-item"><span class="c-key">RMS Amplitude</span><span class="c-val">${rmsAmplitude.toFixed(4)}</span></div>
+                    <div class="constant-item"><span class="c-key">Fundamental %</span><span class="c-val" style="color:var(--accent-purple)">${energyRatio}%</span></div>
+                </div>
+                <div class="c-desc">Energy in fundamental harmonic relative to total N-term energy</div>
+                <div class="energy-bar-wrap"><div class="energy-bar-fill" style="width:${Math.min(100, parseFloat(energyRatio))}%"></div></div>
+            `;
+            panel.appendChild(energyCard);
+
+            // --- Card 3: Symmetry Analysis ---
+            const allBnZero = displayHarmonics.every(h => Math.abs(h.bn) < 0.001);
+            const allAnZero = displayHarmonics.every(h => Math.abs(h.an) < 0.001);
+            const evenOnly = displayHarmonics.filter(h => h.n % 2 === 0).every(h => h.cn < 0.001);
+            const hasEvenSym = allBnZero;
+            const hasOddSym = allAnZero;
+
+            const symCard = document.createElement('div');
+            symCard.className = 'constant-card';
+            symCard.innerHTML = `
+                <div class="constant-card-header">
+                    <span class="constant-title">Symmetry Analysis</span>
+                    <span class="constant-badge">parity</span>
+                </div>
+                <div class="symmetry-list">
+                    <div class="sym-row">
+                        <span style="color:var(--text-dim)">Even symmetry (cos only):</span>
+                        <span class="sym-status" style="color:${hasEvenSym ? 'var(--accent-cyan)' : 'var(--accent-coral)'}">${hasEvenSym ? '✓ Yes' : '✗ No'}</span>
+                    </div>
+                    <div class="sym-row">
+                        <span style="color:var(--text-dim)">Odd symmetry (sin only):</span>
+                        <span class="sym-status" style="color:${hasOddSym ? 'var(--accent-cyan)' : 'var(--accent-coral)'}">${hasOddSym ? '✓ Yes' : '✗ No'}</span>
+                    </div>
+                    <div class="sym-row">
+                        <span style="color:var(--text-dim)">Half-wave symmetry:</span>
+                        <span class="sym-status" style="color:${evenOnly ? 'var(--accent-cyan)' : 'var(--accent-coral)'}">${evenOnly ? '✓ Yes' : '✗ No'}</span>
+                    </div>
+                    <div class="sym-row">
+                        <span style="color:var(--text-dim)">DC component:</span>
+                        <span class="sym-status" style="color:${Math.abs(dcOffset) < 0.001 ? 'var(--accent-cyan)' : 'var(--accent-peach)'}">${Math.abs(dcOffset) < 0.001 ? '0 (zero mean)' : dcOffset.toFixed(4)}</span>
+                    </div>
+                </div>
+            `;
+            panel.appendChild(symCard);
+
+            // --- Card 4: Convergence Rate ---
+            let convRate = '—';
+            if (displayHarmonics.length >= 3) {
+                const c1 = harmonics[0].cn, c2 = harmonics.length > 1 ? harmonics[1].cn : 0;
+                if (c1 > 0.001 && c2 > 0.001) {
+                    const ratio = c2 / c1;
+                    convRate = ratio.toFixed(3) + ' (c₂/c₁)';
+                }
+            }
+            let convClass = '';
+            if (currentWaveform === 'square' || currentWaveform === 'sawtooth') convClass = '1/n (slow: discontinuous)';
+            else if (currentWaveform === 'triangle') convClass = '1/n² (fast: continuous)';
+            else if (currentWaveform === 'sine') convClass = 'Exact (single term)';
+            else convClass = 'Numerical approximation';
+
+            const convCard = document.createElement('div');
+            convCard.className = 'constant-card';
+            convCard.innerHTML = `
+                <div class="constant-card-header">
+                    <span class="constant-title">Convergence</span>
+                    <span class="constant-badge">rate</span>
+                </div>
+                <div class="constant-grid">
+                    <div class="constant-item"><span class="c-key">Amplitude ratio c₂/c₁</span><span class="c-val">${convRate}</span></div>
+                    <div class="constant-item"><span class="c-key">Convergence class</span><span class="c-val" style="color:var(--accent-purple);font-size:0.65rem;">${convClass}</span></div>
+                </div>
+            `;
+            panel.appendChild(convCard);
+
+            // Update header chips
+            document.getElementById('coeffModalTermsCount').textContent = numTerms;
+            document.getElementById('coeffModalDC').textContent = dcOffset.toFixed(3);
+        }
+
+        function renderExpandedCoeffTable(tab) {
+            const head = document.getElementById('expandedCoeffTableHead');
+            const body = document.getElementById('expandedCoeffTableBody');
+            const title = document.getElementById('expandedTableTitle');
+            const useDecimal = document.getElementById('expandedDecimalToggle').checked;
+            head.innerHTML = '';
+            body.innerHTML = '';
+
+            const displayHarmonics = harmonics.slice(0, numTerms);
+            const isNum = currentWaveform === 'drawn' || (currentWaveform === 'custom' && (!currentCustomSolution || !currentCustomSolution.isClosedForm));
+
+            const fmt = (v) => Math.abs(v) < 0.0005 ? '<span class="val-zero">0</span>' : v.toFixed(4);
+            const fmtCl = (v, cls) => Math.abs(v) < 0.0005 ? `<span class="val-zero">0</span>` : `<span class="${cls}">${v.toFixed(4)}</span>`;
+
+            if (tab === 'fourier') {
+                title.innerHTML = ' Fourier Coefficients &nbsp; <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400">a₁, a₂… &nbsp;·&nbsp; b₁, b₂… &nbsp;·&nbsp; |c₁|, |c₂|…</span>';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<th class="col-n">n</th><th>aₙ</th><th>bₙ</th><th>|cₙ|</th><th>φₙ (°)</th><th>Energy %</th>`;
+                head.appendChild(tr);
+
+                const totalE = displayHarmonics.reduce((s, h) => s + h.cn * h.cn, 0);
+
+                // DC row
+                const dcRow = document.createElement('tr');
+                dcRow.className = 'dc-row';
+                dcRow.innerHTML = `<td class="col-n">DC</td><td colspan="2"><span style="color:var(--accent-peach)">a₀/2 = ${dcOffset.toFixed(4)}</span></td><td><span class="val-mag">${Math.abs(dcOffset).toFixed(4)}</span></td><td><span class="val-phase">—</span></td><td>—</td>`;
+                body.appendChild(dcRow);
+
+                displayHarmonics.forEach(h => {
+                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    const energyPct = totalE > 0 ? (h.cn * h.cn / totalE * 100).toFixed(1) : '0.0';
+                    const row = document.createElement('tr');
+                    const anStr = useDecimal || isNum ? fmtCl(h.an, 'val-an') : (h.anMath ? `<span class="val-an">${h.an.toFixed(4)}</span>` : fmtCl(h.an, 'val-an'));
+                    const bnStr = useDecimal || isNum ? fmtCl(h.bn, 'val-bn') : (h.bnMath ? `<span class="val-bn">${h.bn.toFixed(4)}</span>` : fmtCl(h.bn, 'val-bn'));
+                    row.innerHTML = `
+                        <td class="col-n">${h.n}</td>
+                        <td>${anStr}</td>
+                        <td>${bnStr}</td>
+                        <td><span class="val-mag">${h.cn.toFixed(4)}</span></td>
+                        <td><span class="val-phase">${deg}°</span></td>
+                        <td style="color:var(--accent-cyan)">${energyPct}%</td>
+                    `;
+                    body.appendChild(row);
+                });
+
+            } else if (tab === 'exponential') {
+                title.innerHTML = ' Exponential Coefficients &nbsp; <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400">c₀, c₁, c₂… &nbsp;·&nbsp; c₋₁, c₋₂…</span>';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<th class="col-n">n</th><th>cₙ (real)</th><th>cₙ (imag)</th><th>c₋ₙ (real)</th><th>c₋ₙ (imag)</th><th>|cₙ|</th><th>φₙ (°)</th>`;
+                head.appendChild(tr);
+
+                const dcRow = document.createElement('tr');
+                dcRow.className = 'dc-row';
+                dcRow.innerHTML = `<td class="col-n">0</td><td colspan="4"><span style="color:var(--accent-peach)">c₀ = ${dcOffset.toFixed(4)}</span></td><td><span class="val-mag">${Math.abs(dcOffset).toFixed(4)}</span></td><td>—</td>`;
+                body.appendChild(dcRow);
+
+                displayHarmonics.forEach(h => {
+                    const phi = h.cn > 0.001 ? Math.atan2(-h.bn, h.an) : 0;
+                    const deg = Math.round(phi * 180 / Math.PI);
+                    const cnR = h.an / 2, cnI = -h.bn / 2;
+                    const cnegR = h.an / 2, cnegI = h.bn / 2;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="col-n">${h.n}</td>
+                        <td><span class="val-cn">${fmtRaw(cnR)}</span></td>
+                        <td><span class="val-cn">${Math.abs(cnI) < 0.0005 ? '<span class="val-zero">0</span>' : (cnI < 0 ? '-' : '+') + Math.abs(cnI).toFixed(4) + 'i'}</span></td>
+                        <td><span class="val-cneg">${fmtRaw(cnegR)}</span></td>
+                        <td><span class="val-cneg">${Math.abs(cnegI) < 0.0005 ? '<span class="val-zero">0</span>' : (cnegI < 0 ? '-' : '+') + Math.abs(cnegI).toFixed(4) + 'i'}</span></td>
+                        <td><span class="val-mag">${(h.cn / 2).toFixed(4)}</span></td>
+                        <td><span class="val-phase">${deg}°</span></td>
+                    `;
+                    body.appendChild(row);
+                });
+
+            } else if (tab === 'half-sine') {
+                title.innerHTML = ' Half-range Sine Coefficients &nbsp; <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400">b₁, b₂, … for sin(nπx)</span>';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<th class="col-n">n</th><th>bₙ (half-sine)</th><th>|bₙ|</th><th>sign</th>`;
+                head.appendChild(tr);
+                halfSineHarmonics.slice(0, numTerms).forEach(h => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="col-n">${h.n}</td>
+                        <td>${fmtCl(h.bn, 'val-hs')}</td>
+                        <td><span class="val-mag">${Math.abs(h.bn).toFixed(4)}</span></td>
+                        <td style="color:${h.bn >= 0 ? 'var(--accent-cyan)' : 'var(--accent-coral)'}">${h.bn >= 0 ? '+' : '−'}</td>
+                    `;
+                    body.appendChild(row);
+                });
+
+            } else if (tab === 'half-cosine') {
+                title.innerHTML = ' Half-range Cosine Coefficients &nbsp; <span style="color:var(--text-dim);font-size:0.7rem;font-weight:400">a₀, a₁, a₂, … for cos(nπx)</span>';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<th class="col-n">n</th><th>aₙ (half-cosine)</th><th>|aₙ|</th><th>sign</th>`;
+                head.appendChild(tr);
+
+                const dcRow = document.createElement('tr');
+                dcRow.className = 'dc-row';
+                dcRow.innerHTML = `<td class="col-n">0</td><td colspan="2"><span style="color:var(--accent-peach)">a₀ = ${(2 * dcOffset).toFixed(4)}</span></td><td>+</td>`;
+                body.appendChild(dcRow);
+
+                halfCosineHarmonics.slice(0, numTerms).forEach(h => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="col-n">${h.n}</td>
+                        <td>${fmtCl(h.an, 'val-hc')}</td>
+                        <td><span class="val-mag">${Math.abs(h.an).toFixed(4)}</span></td>
+                        <td style="color:${h.an >= 0 ? 'var(--accent-cyan)' : 'var(--accent-coral)'}">${h.an >= 0 ? '+' : '−'}</td>
+                    `;
+                    body.appendChild(row);
+                });
+            }
+
+            function fmtRaw(v) {
+                return Math.abs(v) < 0.0005 ? '<span class="val-zero">0</span>' : v.toFixed(4);
+            }
+        }
+
+        // Handle window resize for expanded canvases
+        window.addEventListener('resize', () => {
+            if (document.getElementById('expandedAmpOverlay').classList.contains('active')) {
+                fitExpandedCanvas(expAmpCanvas, expAmpCtx);
+                drawExpandedAmplitude();
+            }
+            if (document.getElementById('expandedPhaseOverlay').classList.contains('active')) {
+                fitExpandedCanvas(expPhaseCanvas, expPhaseCtx);
+                drawExpandedPhase();
+            }
+        });
+
     </script>
 </body>
 
