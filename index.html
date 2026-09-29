@@ -2773,7 +2773,7 @@
                 }
             } else if (currentWaveform === 'sawtooth') {
                 for (let n = 1; n <= MAX_HARMONICS; n++) {
-                    const bn = (n % 2 === 0 ? -1 : 1) * (2 / (n * Math.PI));
+                    const bn = -2 / (n * Math.PI);
                     newHarmonics.push({
                         n: n,
                         an: 0,
@@ -2781,7 +2781,7 @@
                         cn: Math.abs(bn),
                         theta: bn >= 0 ? 0 : Math.PI,
                         anMath: `a_{${n}} = 0`,
-                        bnMath: `b_{${n}} = \\frac{2(-1)^{${n}+1}}{${n}\\pi}`,
+                        bnMath: `b_{${n}} = -\\frac{2}{${n}\\pi}`,
                         baseRadius: 70 * Math.abs(bn)
                     });
                 }
@@ -4036,19 +4036,19 @@
 
             if (currentWaveform === 'square') {
                 hasDiscontinuity = true;
-                jumpSize = 2.0; // from -1 to +1 at x=0
-                jumpLocation = 0;
-                leftVal = -1; rightVal = 1;
+                jumpSize = 2.0; // drops from +1 to -1 at x=0.5 (or jumps -1 to +1 at x=0)
+                jumpLocation = 0.5;
+                leftVal = 1; rightVal = -1;
             } else if (currentWaveform === 'sawtooth') {
                 hasDiscontinuity = true;
-                jumpSize = 2.0; // from +1 to -1 at x=0/1
+                jumpSize = 2.0; // drops from +1 to -1 at x=1 (or x=0)
                 jumpLocation = 0;
                 leftVal = 1; rightVal = -1;
             } else if (currentWaveform === 'pulse') {
                 hasDiscontinuity = true;
-                jumpSize = 2.0;
-                jumpLocation = 0;
-                leftVal = -1; rightVal = 1;
+                jumpSize = 2.0; // drops from +1 to -1 at x = dutyCycle
+                jumpLocation = dutyCycle;
+                leftVal = 1; rightVal = -1;
             } else if (currentWaveform === 'sine' || currentWaveform === 'triangle') {
                 hasDiscontinuity = false;
             } else {
@@ -4093,25 +4093,29 @@
             if (hasDiscontinuity && jumpSize > 0.05) {
                 // Evaluate Fourier series synthesis near the jump to calculate actual peak overshoot
                 let maxOvershoot = 0;
-                const targetPlateau = Math.max(leftVal, rightVal);
-                const step = 0.25 / Math.max(numTerms, 1); // window size scaled by harmonic count
-                const numEval = 300;
+                const upperPlateau = Math.max(leftVal, rightVal);
+                const lowerPlateau = Math.min(leftVal, rightVal);
+                // Scan window step: scale slightly with terms, but ensure we don't shrink past peak
+                const step = 0.15;
+                const numEval = 600;
 
                 for (let i = 0; i <= numEval; i++) {
-                    const x = ((jumpLocation + (i / numEval) * step) % 1 + 1) % 1;
+                    const offset = -step + (i / numEval) * (2 * step);
+                    const x = ((jumpLocation + offset) % 1 + 1) % 1;
                     let val = dcOffset;
                     for (let h of active) {
                         val += h.an * Math.cos(2 * Math.PI * h.n * x) + h.bn * Math.sin(2 * Math.PI * h.n * x);
                     }
-                    const overshoot = val - targetPlateau;
+                    const overshootAbove = val - upperPlateau;
+                    const overshootBelow = lowerPlateau - val;
+                    const overshoot = Math.max(overshootAbove, overshootBelow);
                     if (overshoot > maxOvershoot) maxOvershoot = overshoot;
                 }
 
-                // Calculate overshoot as percentage of half the jump height (Wilbraham-Gibbs definition)
-                const halfJump = Math.max(jumpSize / 2, 0.001);
-                let pct = (maxOvershoot / halfJump) * 100;
+                // Calculate overshoot as percentage of total jump height H (Wilbraham-Gibbs constant = 8.949% of jump H)
+                const safeJump = Math.max(jumpSize, 0.001);
+                let pct = (maxOvershoot / safeJump) * 100;
                 if (!isFinite(pct) || pct < 0) pct = 0;
-                // Cap displayed overshoot reasonably for high-order finite sum
                 const pctStr = pct.toFixed(2);
 
                 badge.textContent = `+${pctStr}%`;
@@ -4388,7 +4392,7 @@
             // Render Gibbs formula using KaTeX (inline with dfrac for proper size)
             const gibbsElem = document.getElementById('gibbsFormulaBox');
             if (gibbsElem) {
-                const gibbsLatex = '\\Delta = \\dfrac{1}{\\pi}\\int_0^{\\pi} \\dfrac{\\sin t}{t}\\,dt - \\dfrac{1}{2} \\approx 8.949\\%';
+                const gibbsLatex = '\\Delta = \\dfrac{1}{\\pi}\\int_0^{\\pi} \\dfrac{\\sin t}{t}\\,dt - \\dfrac{1}{2}';
                 if (window.katex) {
                     try { katex.render(gibbsLatex, gibbsElem, { throwOnError: false, displayMode: false }); }
                     catch(e) { gibbsElem.innerHTML = latexToHtml(gibbsLatex); }
