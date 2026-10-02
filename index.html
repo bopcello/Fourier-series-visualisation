@@ -3128,9 +3128,11 @@
 
             const finalY = y;
 
-            wave.unshift(finalY);
-            if (wave.length > maxWavePoints) {
-                wave.pop();
+            if (isAnimating) {
+                wave.unshift(finalY);
+                if (wave.length > maxWavePoints) {
+                    wave.pop();
+                }
             }
 
             const waveStartX = Math.max(260, canvas.clientWidth * 0.42);
